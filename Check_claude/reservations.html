@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservations - Bella Cucina</title>
+    <style>
+        /* Base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Georgia', serif;
+        }
+        
+        body {
+            background-color: #faf7f2;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header styles */
+        header {
+            background-color: #8b0000;
+            color: #fff;
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            font-style: italic;
+        }
+        
+        .logo span {
+            color: #f8e9a1;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 20px;
+        }
+        
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            transition: color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: #f8e9a1;
+        }
+        
+        /* Page header */
+        .page-header {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/api/placeholder/1200/300');
+            background-size: cover;
+            background-position: center;
+            color: #fff;
+            text-align: center;
+            padding: 80px 0;
+        }
+        
+        .page-header h1 {
+            font-size: 42px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+        }
+        
+        .page-header p {
+            font-size: 18px;
+            max-width: 800px;
+            margin: 0 auto;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+        }
+        
+        /* Reservations content */
+        .reservations-content {
+            padding: 80px 0;
+        }
+        
+        .reservation-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+        }
+        
+        .reservation-info h2 {
+            font-size: 32px;
+            color: #8b0000;
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .reservation-info h2::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background-color: #8b0000;
+        }
+        
+        .info-item {
+            margin-bottom: 25px;
+        }
+        
+        .info-item h3 {
+            font-size: 22px;
+            color: #8b0000;
+            margin-bottom: 10px;
+        }
+        
+        .info-item p {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        
+        /* Form styles */
+        .reservation-form {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .reservation-form h2 {
+            font-size: 28px;
+            color: #8b0000;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #555;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            font-family: 'Georgia', serif;
+        }
+        
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: #8b0000;
+            color: #fff;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            width: 100%;
+        }
+        
+        .btn:hover {
+            background-color: #6b0000;
+        }
+        
+        /* Policy section */
+        .reservation-policy {
+            margin-top: 80px;
+            background-color: #f0e6d2;
+            padding: 50px 0;
+        }
+        
+        .policy-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .reservation-policy h2 {
+            font-size: 32px;
+            color: #8b0000;
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .reservation-policy h2::after {
+            content: "";
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: #8b0000;
+        }
+        
+        .policy-item {
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+        
+        .policy-item h3 {
+            font-size: 22px;
+            color: #8b0000;
+            margin-bottom: 15px;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 60px 0 30px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-section h3 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #f8e9a1;
+        }
+        
+        .footer-section p, .footer-section a {
+            color: #ccc;
+            margin-bottom: 10px;
+            display: block;
+            text-decoration: none;
+        }
+        
+        .footer-section a:hover {
+            color: #fff;
+        }
+        
+        .social-links a {
+            display: inline-block;
+            margin-right: 15px;
+            color: #fff;
+            font-size: 20px;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid #555;
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .reservation-container {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            nav ul {
+                margin-top: 20px;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Modal styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            width: 600px;
+            text-align: center;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* Restaurant layout styles */
+        .restaurant-layout {
+            position: relative;
+            width: 500px;
+            height: 500px;
+            margin: 20px auto;
+            border-radius: 50%;
+            background-color: #f0e6d2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .kitchen {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background-color: #8b0000;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            font-weight: bold;
+            z-index: 2;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .table {
+            position: absolute;
+            width: 60px;
+            height: 40px;
+            background-color: #fff;
+            border: 2px solid #8b0000;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .table:hover {
+            background-color: #8b0000;
+            color: #fff;
+        }
+
+        .table.selected {
+            background-color: #8b0000;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-content">
+            <div class="logo">Bella <span>Cucina</span></div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="menu.html">Menu</a></li>
+                    <li><a href="reservations.html">Reservations</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>Reserve Your Table</h1>
+            <p>Join us for an authentic Italian dining experience in a warm and inviting atmosphere</p>
+        </div>
+    </section>
+
+    <!-- Reservations Content -->
+    <section class="reservations-content">
+        <div class="container reservation-container">
+            <div class="reservation-info">
+                <h2>Reservation Information</h2>
+                
+                <div class="info-item">
+                    <h3>Hours of Operation</h3>
+                    <p>Monday - Thursday: 11:30 AM - 10:00 PM</p>
+                    <p>Friday - Saturday: 11:30 AM - 11:00 PM</p>
+                    <p>Sunday: 12:00 PM - 9:00 PM</p>
+                </div>
+                
+                <div class="info-item">
+                    <h3>Contact Information</h3>
+                    <p>Phone: (555) 123-4567</p>
+                    <p>Email: reservations@bellacucina.com</p>
+                    <p>Address: 123 Pasta Street, Foodville, NY 10001</p>
+                </div>
+                
+                <div class="info-item">
+                    <h3>Special Occasions</h3>
+                    <p>Planning a special event? We offer special arrangements for birthdays, anniversaries, and other celebrations. Please mention it in your reservation notes and our staff will contact you to discuss the details.</p>
+                </div>
+                
+                <div class="info-item">
+                    <h3>Large Groups</h3>
+                    <p>For parties of 8 or more, please call us directly to make arrangements. We offer semi-private dining areas for larger groups.</p>
+                </div>
+            </div>
+            
+            <div class="reservation-form">
+                <h2>Make a Reservation</h2>
+                <form method="post" id="reservationForm">
+                    <div class="form-group">
+                        <label for="name">Full Name*</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address*</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Phone Number*</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="date">Date*</label>
+                            <input type="date" id="date" name="date" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="time">Time*</label>
+                            <select id="time" name="time" required>
+                                <option value="">Select Time</option>
+                                <option value="11:30">11:30 AM</option>
+                                <option value="12:00">12:00 PM</option>
+                                <option value="12:30">12:30 PM</option>
+                                <option value="13:00">1:00 PM</option>
+                                <option value="13:30">1:30 PM</option>
+                                <option value="14:00">2:00 PM</option>
+                                <option value="18:00">6:00 PM</option>
+                                <option value="18:30">6:30 PM</option>
+                                <option value="19:00">7:00 PM</option>
+                                <option value="19:30">7:30 PM</option>
+                                <option value="20:00">8:00 PM</option>
+                                <option value="20:30">8:30 PM</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="guests">Number of Guests*</label>
+                        <select id="guests" name="guests" required>
+                            <option value="">Select Number</option>
+                            <option value="1">1 Person</option>
+                            <option value="2">2 People</option>
+                            <option value="3">3 People</option>
+                            <option value="4">4 People</option>
+                            <option value="5">5 People</option>
+                            <option value="6">6 People</option>
+                            <option value="7">7 People</option>
+                            <option value="8">8+ People (Please call)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="occasion">Special Occasion</label>
+                        <select id="occasion" name="occasion">
+                            <option value="">Select Occasion (Optional)</option>
+                            <option value="birthday">Birthday</option>
+                            <option value="anniversary">Anniversary</option>
+                            <option value="date">Date Night</option>
+                            <option value="business">Business Meeting</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="requests">Special Requests</label>
+                        <textarea id="requests" name="requests" placeholder="Please let us know if you have any special requests or dietary restrictions"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="table">Selected Table*</label>
+                        <input type="text" id="selectedTable" name="table" readonly required onclick="openModal()" placeholder="Click to select a table">
+                    </div>
+                    
+                    <button type="submit" class="btn">Reserve Now</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Table Selection Modal -->
+    <div id="tableModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h2>Select Your Table</h2>
+            <div class="restaurant-layout">
+                <!-- Kitchen in the center -->
+                <div class="kitchen">Kitchen</div>
+                <!-- Tables evenly distributed around the circle -->
+                <div class="table" data-table="1" style="top: 1%; left: 44%; transform: rotate(0deg);" onclick="selectTable(1)">1</div>
+                <div class="table" data-table="2" style="top: 16%; left: 14%; transform: rotate(-45deg);" onclick="selectTable(2)">2</div>
+                <div class="table" data-table="3" style="top: 16%; left: 74%; transform: rotate(45deg);" onclick="selectTable(3)">3</div>
+                <div class="table" data-table="4" style="top: 46%; left: 4%; transform: rotate(-90deg);" onclick="selectTable(4)">4</div>
+                <div class="table" data-table="5" style="top: 46%; left: 84%; transform: rotate(90deg);" onclick="selectTable(5)">5</div>
+                <div class="table" data-table="6" style="top: 76%; left: 14%; transform: rotate(-135deg);" onclick="selectTable(6)">6</div>
+                <div class="table" data-table="7" style="top: 76%; left: 74%; transform: rotate(135deg);" onclick="selectTable(7)">7</div>
+                <div class="table" data-table="8" style="top: 91%; left: 44%; transform: rotate(180deg);" onclick="selectTable(8)">8</div>
+                <div class="table" data-table="9" style="top: 31%; left: 29%; transform: rotate(-30deg);" onclick="selectTable(9)">9</div>
+                <div class="table" data-table="10" style="top: 31%; left: 59%; transform: rotate(30deg);" onclick="selectTable(10)">10</div>
+                <div class="table" data-table="11" style="top: 61%; left: 29%; transform: rotate(-150deg);" onclick="selectTable(11)">11</div>
+                <div class="table" data-table="12" style="top: 61%; left: 59%; transform: rotate(150deg);" onclick="selectTable(12)">12</div>
+                <div class="table" data-table="13" style="top: 46%; left: 24%; transform: rotate(-90deg);" onclick="selectTable(13)">13</div>
+                <div class="table" data-table="14" style="top: 46%; left: 64%; transform: rotate(90deg);" onclick="selectTable(14)">14</div>
+                <div class="table" data-table="15" style="top: 70%; left: 44%; transform: rotate(0deg);" onclick="selectTable(15)">15</div>
+                <div class="table" data-table="16" style="top: 22%; left: 44%; transform: rotate(0deg);" onclick="selectTable(16)">16</div>
+            </div>
+            <button class="btn" onclick="confirmTable()">Confirm Table</button>
+        </div>
+    </div>
+
+    <!-- Reservation Policy -->
+    <section class="reservation-policy">
+        <div class="container policy-container">
+            <h2>Reservation Policies</h2>
+            
+            <div class="policy-item">
+                <h3>Confirmation</h3>
+                <p>Once you submit your reservation request, you will receive an email confirmation within 30 minutes. If you don't receive a confirmation, please contact us directly.</p>
+            </div>
+            
+            <div class="policy-item">
+                <h3>Cancellation</h3>
+                <p>We kindly ask that you notify us at least 24 hours in advance if you need to cancel or modify your reservation. For parties of 6 or more, we require 48 hours notice.</p>
+            </div>
+            
+            <div class="policy-item">
+                <h3>Late Arrival</h3>
+                <p>We will hold your reservation for 15 minutes past your reservation time. If you're running late, please call us to let us know, and we'll do our best to accommodate you.</p>
+            </div>
+            
+            <div class="policy-item">
+                <h3>Seating Preferences</h3>
+                <p>While we will do our best to accommodate seating preferences, specific table requests cannot be guaranteed. Thank you for your understanding.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Bella Cucina</h3>
+                    <p>Bringing authentic Italian flavors to your table since 2010. Family-owned and passionate about great food.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Opening Hours</h3>
+                    <p>Monday - Thursday: 11:30 AM - 10:00 PM</p>
+                    <p>Friday - Saturday: 11:30 AM - 11:00 PM</p>
+                    <p>Sunday: 12:00 PM - 9:00 PM</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Info</h3>
+                    <p>123 Pasta Street, Foodville, NY 10001</p>
+                    <p>Phone: (555) 123-4567</p>
+                    <p>Email: info@bellacucina.com</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Follow Us</h3>
+                    <div class="social-links">
+                        <a href="#">Facebook</a>
+                        <a href="#">Instagram</a>
+                        <a href="#">Twitter</a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Bella Cucina. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let selectedTable = null;
+
+        function openModal() {
+            document.getElementById('tableModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('tableModal').style.display = 'none';
+        }
+
+        function selectTable(tableNumber) {
+            const tables = document.querySelectorAll('.table');
+            tables.forEach(table => table.classList.remove('selected'));
+            const selected = document.querySelector(`.table[data-table="${tableNumber}"]`);
+            selected.classList.add('selected');
+            selectedTable = tableNumber;
+        }
+
+        function confirmTable() {
+            if (selectedTable) {
+                document.getElementById('selectedTable').value = `Table ${selectedTable}`;
+                closeModal();
+            } else {
+                alert('Please select a table.');
+            }
+        }
+
+        // Update form submission handler
+        document.getElementById('reservationForm').onsubmit = function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const data = {};
+            formData.forEach((value, key) => data[key] = value);
+
+            fetch('https://your-render-app-name.onrender.com/api/reservations', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Reservation successful!');
+                    this.reset();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                alert('Error submitting reservation');
+                console.error('Error:', error);
+            });
+        };
+    </script>
+</body>
+</html>
