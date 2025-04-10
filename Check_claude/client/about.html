@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Bella Cucina</title>
+    <style>
+        /* Base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Georgia', serif;
+        }
+        
+        body {
+            background-color: #faf7f2;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header styles */
+        header {
+            background-color: #8b0000;
+            color: #fff;
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            font-style: italic;
+        }
+        
+        .logo span {
+            color: #f8e9a1;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 20px;
+        }
+        
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            transition: color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: #f8e9a1;
+        }
+        
+        /* Page header */
+        .page-header {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/api/placeholder/1200/300');
+            background-size: cover;
+            background-position: center;
+            color: #fff;
+            text-align: center;
+            padding: 80px 0;
+        }
+        
+        .page-header h1 {
+            font-size: 42px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+        }
+        
+        .page-header p {
+            font-size: 18px;
+            max-width: 800px;
+            margin: 0 auto;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+        }
+        
+        /* Our Story Section */
+        .our-story {
+            padding: 80px 0;
+        }
+        
+        .story-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+        
+        .story-content h2 {
+            font-size: 36px;
+            color: #8b0000;
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .story-content h2::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background-color: #8b0000;
+        }
+        
+        .story-content p {
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+        
+        .story-image {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .story-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        /* Values Section */
+        .values {
+            padding: 80px 0;
+            background-color: #f0e6d2;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 60px;
+            color: #8b0000;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: "";
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: #8b0000;
+        }
+        
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        
+        .value-item {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .value-item h3 {
+            font-size: 24px;
+            color: #8b0000;
+            margin-bottom: 15px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .value-item h3::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 2px;
+            background-color: #8b0000;
+        }
+        
+        /* Team Section */
+        .team {
+            padding: 80px 0;
+        }
+        
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        
+        .team-member {
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        
+        .team-member:hover {
+            transform: translateY(-10px);
+        }
+        
+        .member-image {
+            height: 300px;
+            overflow: hidden;
+        }
+        
+        .member-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .member-info {
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .member-info h3 {
+            font-size: 24px;
+            color: #8b0000;
+            margin-bottom: 10px;
+        }
+        
+        .member-info .position {
+            font-style: italic;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        /* Awards Section */
+        .awards {
+            padding: 80px 0;
+            background-color: #f0e6d2;
+        }
+        
+        .awards-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+        
+        .award-item {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .award-item h3 {
+            font-size: 22px;
+            color: #8b0000;
+            margin-bottom: 15px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .award-item h3::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 2px;
+            background-color: #8b0000;
+        }
+        
+        .award-item .year {
+            font-weight: bold;
+        }
+        
+        /* Visit Us Section */
+        .visit-us {
+            padding: 80px 0;
+        }
+        
+        .visit-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+        }
+        
+        .map-container {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            height: 400px;
+            background-color: #eee;
+        }
+        
+        .map-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #ddd;
+            font-size: 18px;
+            color: #666;
+        }
+        
+        .visit-info {
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .visit-info h2 {
+            font-size: 28px;
+            color: #8b0000;
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .visit-info h2::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background-color: #8b0000;
+        }
+        
+        .info-block {
+            margin-bottom: 20px;
+        }
+        
+        .info-block h3 {
+            font-size: 20px;
+            color: #8b0000;
+            margin-bottom: 10px;
+        }
+        
+        .info-block p {
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: #8b0000;
+            color: #fff;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            margin-top: 15px;
+        }
+        
+        .btn:hover {
+            background-color: #6b0000;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 60px 0 30px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-section h3 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #f8e9a1;
+        }
+        
+        .footer-section p, .footer-section a {
+            color: #ccc;
+            margin-bottom: 10px;
+            display: block;
+            text-decoration: none;
+        }
+        
+        .footer-section a:hover {
+            color: #fff;
+        }
+        
+        .social-links a {
+            display: inline-block;
+            margin-right: 15px;
+            color: #fff;
+            font-size: 20px;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid #555;
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .story-container, .visit-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .awards-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .values-grid, .team-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            nav ul {
+                margin-top: 20px;
+            }
+            
+            .values-grid, .team-grid, .awards-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-content">
+            <div class="logo">Bella <span>Cucina</span></div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="menu.html">Menu</a></li>
+                    <li><a href="reservations.html">Reservations</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>About Bella Cucina</h1>
+            <p>Discover the story, passion, and people behind our authentic Italian cuisine</p>
+        </div>
+    </section>
+
+    <!-- Our Story Section -->
+    <section class="our-story">
+        <div class="container story-container">
+            <div class="story-content">
+                <h2>Our Story</h2>
+                <p>Bella Cucina was born from a deep love of Italian cuisine and the desire to bring authentic flavors of Italy to Foodville. Founded in 2010 by the Romano family, our restaurant has been serving traditional recipes passed down through generations.</p>
+                
+                <p>Chef Marco Romano, who trained in Naples and worked in some of Italy's finest restaurants, returned to America with a dream to create a dining experience that would transport guests straight to Italy. Using his grandmother's cherished recipes and techniques, he established Bella Cucina as a place where quality ingredients and traditional methods come together to create extraordinary meals.</p>
+                
+                <p>What started as a small family-owned trattoria has grown into a beloved local institution, all while maintaining the warmth, passion, and commitment to authentic Italian cuisine that has defined us from the beginning. Each dish tells a story of tradition, family, and the rich culinary heritage of Italy.</p>
+            </div>
+            <div class="story-image">
+                <img src="https://images.unsplash.com/photo-1574936145840-28808d77a0b6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Bella Cucina Restaurant Interior">
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Values Section -->
+    <section class="values">
+        <div class="container">
+            <h2 class="section-title">Our Values</h2>
+            <div class="values-grid">
+                <div class="value-item">
+                    <h3>Authenticity</h3>
+                    <p>We stay true to traditional Italian recipes and cooking methods, never compromising on quality or taking shortcuts that would diminish the authentic experience.</p>
+                </div>
+                <div class="value-item">
+                    <h3>Quality Ingredients</h3>
+                    <p>We source the finest ingredients, from imported Italian specialties to fresh local produce, ensuring every dish meets our high standards of excellence.</p>
+                </div>
+                <div class="value-item">
+                    <h3>Family Spirit</h3>
+                    <p>We treat our staff and customers like family, creating a warm, welcoming atmosphere where everyone feels at home and part of our story.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Team Section -->
+    <section class="team">
+        <div class="container">
+            <h2 class="section-title">Meet Our Team</h2>
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="member-image">
+                        <img src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Chef Marco Romano">
+                    </div>
+                    <div class="member-info">
+                        <h3>Marco Romano</h3>
+                        <div class="position">Executive Chef & Owner</div>
+                        <p>With over 25 years of culinary experience in Italy and America, Chef Marco brings passion and expertise to every dish. His commitment to authenticity and quality is the foundation of Bella Cucina.</p>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="member-image">
+                        <img src="https://media.istockphoto.com/id/1394055791/photo/portrait-of-confident-black-female-chef-at-restaurant-kitchen-looking-at-camera.jpg?s=612x612&w=0&k=20&c=vmDoulcE99YonSh-W70ZulSn6OV0MXSP_mO1PpYN5kM=" alt="Sofia Romano">
+                    </div>
+                    <div class="member-info">
+                        <h3>Sofia Romano</h3>
+                        <div class="position">General Manager</div>
+                        <p>Sofia ensures that every guest experiences the warmth and hospitality that Bella Cucina is known for. Her attention to detail and commitment to service excellence guides our entire staff.</p>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="member-image">
+                        <img src="https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Antonio Ricci">
+                    </div>
+                    <div class="member-info">
+                        <h3>Antonio Ricci</h3>
+                        <div class="position">Head Sommelier</div>
+                        <p>Antonio's extensive knowledge of Italian wines helps create perfect pairings for our menu. He personally selects each wine in our collection to complement our dishes.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Awards Section -->
+    <section class="awards">
+        <div class="container">
+            <h2 class="section-title">Awards & Recognition</h2>
+            <div class="awards-grid">
+                <div class="award-item">
+                    <h3>Best Italian Restaurant</h3>
+                    <p>Foodville Dining Awards</p>
+                    <p class="year">2023</p>
+                </div>
+                <div class="award-item">
+                    <h3>Excellence in Service</h3>
+                    <p>Culinary Association</p>
+                    <p class="year">2022</p>
+                </div>
+                <div class="award-item">
+                    <h3>Chef of the Year</h3>
+                    <p>Regional Culinary Institute</p>
+                    <p class="year">2021</p>
+                </div>
+                <div class="award-item">
+                    <h3>Outstanding Wine Selection</h3>
+                    <p>Wine Enthusiast Magazine</p>
+                    <p class="year">2020</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Visit Us Section -->
+    <section class="visit-us">
+        <div class="container">
+            <h2 class="section-title">Visit Us</h2>
+            <div class="visit-grid">
+                <div class="map-container">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.982952740071!2d-73.98754692404069!3d40.74844623545451!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c259a9b30eac9f%3A0xaca05ca48ab0c23!2s245%20Park%20Ave%2C%20New%20York%2C%20NY%2010167!5e0!3m2!1sen!2sus!4v1695899120000!5m2!1sen!2sus"
+                        width="100%" 
+                        height="100%" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+                <div class="visit-info">
+                    <h2>Find Us</h2>
+                    <div class="info-block">
+                        <h3>Address</h3>
+                        <p>245 Park Avenue</p>
+                        <p>New York, NY 10167</p>
+                    </div>
+                    <div class="info-block">
+                        <h3>Hours</h3>
+                        <p>Monday - Thursday: 11:30 AM - 10:00 PM</p>
+                        <p>Friday - Saturday: 11:30 AM - 11:00 PM</p>
+                        <p>Sunday: 12:00 PM - 9:00 PM</p>
+                    </div>
+                    <div class="info-block">
+                        <h3>Contact</h3>
+                        <p>Phone: (555) 123-4567</p>
+                        <p>Email: info@bellacucina.com</p>
+                    </div>
+                    <a href="reservations.html" class="btn">Reserve a Table</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Bella Cucina</h3>
+                    <p>Bringing authentic Italian flavors to your table since 2010. Family-owned and passionate about great food.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Opening Hours</h3>
+                    <p>Monday - Thursday: 11:30 AM - 10:00 PM</p>
+                    <p>Friday - Saturday: 11:30 AM - 11:00 PM</p>
+                    <p>Sunday: 12:00 PM - 9:00 PM</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Info</h3>
+                    <p>245 Park Avenue, New York, NY 10167</p>
+                    <p>Phone: (555) 123-4567</p>
+                    <p>Email: info@bellacucina.com</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Follow Us</h3>
+                    <div class="social-links">
+                        <a href="#">Facebook</a>
+                        <a href="#">Instagram</a>
+                        <a href="#">Twitter</a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Bella Cucina. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -681,7 +681,7 @@
             const data = {};
             formData.forEach((value, key) => data[key] = value);
 
-            fetch('/api/reservations', {  // Updated from absolute URL to relative path
+            fetch('/api/reservations', {  // Updated to use relative path
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

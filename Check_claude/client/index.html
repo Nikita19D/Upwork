@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bella Cucina - Authentic Italian Restaurant</title>
+    <style>
+        /* Base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Georgia', serif;
+        }
+        
+        body {
+            background-color: #faf7f2;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header styles */
+        header {
+            background-color: #8b0000;
+            color: #fff;
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            font-style: italic;
+        }
+        
+        .logo span {
+            color: #f8e9a1;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 20px;
+        }
+        
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            transition: color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: #f8e9a1;
+        }
+        
+        /* Hero section */
+        .hero {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1514933651103-005eec06c04b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #fff;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+        }
+        
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+        }
+        
+        .hero p {
+            font-size: 20px;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: #8b0000;
+            color: #fff;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-decoration: none;
+        }
+        
+        .btn:hover {
+            background-color: #6b0000;
+        }
+        
+        /* Features section */
+        .features {
+            padding: 80px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 60px;
+            color: #8b0000;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: "";
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: #8b0000;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        
+        .feature {
+            text-align: center;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        
+        .feature:hover {
+            transform: translateY(-10px);
+        }
+        
+        .feature img {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+        }
+        
+        .feature h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: #8b0000;
+        }
+        
+        /* Menu preview section */
+        .menu-preview {
+            padding: 80px 0;
+            background-color: #f0e6d2;
+        }
+        
+        .menu-items {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+        
+        .menu-item {
+            display: flex;
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .menu-item-img {
+            width: 40%;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .menu-item-content {
+            width: 60%;
+            padding: 20px;
+        }
+        
+        .menu-item h3 {
+            font-size: 22px;
+            margin-bottom: 10px;
+            color: #8b0000;
+        }
+        
+        .menu-item-price {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        /* Testimonials section */
+        .testimonials {
+            padding: 80px 0;
+        }
+        
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        
+        .testimonial {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .testimonial p {
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+        
+        .testimonial-author {
+            font-weight: bold;
+            color: #8b0000;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 60px 0 30px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-section h3 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #f8e9a1;
+        }
+        
+        .footer-section p, .footer-section a {
+            color: #ccc;
+            margin-bottom: 10px;
+            display: block;
+            text-decoration: none;
+        }
+        
+        .footer-section a:hover {
+            color: #fff;
+        }
+        
+        .social-links a {
+            display: inline-block;
+            margin-right: 15px;
+            color: #fff;
+            font-size: 20px;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid #555;
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .features-grid, .testimonials-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .menu-items {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            nav ul {
+                margin-top: 20px;
+            }
+            
+            .features-grid, .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .menu-item {
+                flex-direction: column;
+            }
+            
+            .menu-item-img, .menu-item-content {
+                width: 100%;
+            }
+            
+            .menu-item-img {
+                height: 200px;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-content">
+            <div class="logo">Bella <span>Cucina</span></div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="menu.html">Menu</a></li>
+                    <li><a href="reservations.html">Reservations</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container hero-content">
+            <h1>Authentic Italian Cuisine</h1>
+            <p>Experience the rich flavors of Italy right in your neighborhood. Our chef brings generations of family recipes straight from Naples to your table.</p>
+            <a href="reservations.html" class="btn">Reserve a Table</a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">Why Choose Us</h2>
+            <div class="features-grid">
+                <div class="feature">
+                    <img src="https://images.unsplash.com/photo-1606787366850-de6330128bfc?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&h=80&q=80" alt="Fresh Ingredients Icon">
+                    <h3>Fresh Ingredients</h3>
+                    <p>We source only the freshest, locally-grown ingredients to ensure authentic flavors in every dish.</p>
+                </div>
+                <div class="feature">
+                    <img src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&h=80&q=80" alt="Chef Icon">
+                    <h3>Master Chef</h3>
+                    <p>Our head chef trained in Italy and brings over 25 years of culinary expertise to create unforgettable dishes.</p>
+                </div>
+                <div class="feature">
+                    <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&h=80&q=80" alt="Ambiance Icon">
+                    <h3>Cozy Atmosphere</h3>
+                    <p>Our restaurant offers the perfect ambiance for romantic dinners, family gatherings, or business meals.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Menu Preview Section -->
+    <section class="menu-preview">
+        <div class="container">
+            <h2 class="section-title">Popular Dishes</h2>
+            <div class="menu-items">
+                <div class="menu-item">
+                    <div class="menu-item-img" style="background-image: url('https://images.unsplash.com/photo-1612874742237-6526221588e3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="menu-item-content">
+                        <h3>Spaghetti Carbonara</h3>
+                        <div class="menu-item-price">$16.95</div>
+                        <p>Classic creamy pasta with pancetta, eggs, Pecorino Romano cheese, and freshly ground black pepper.</p>
+                    </div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-img" style="background-image: url('https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="menu-item-content">
+                        <h3>Margherita Pizza</h3>
+                        <div class="menu-item-price">$14.95</div>
+                        <p>Traditional Neapolitan pizza with San Marzano tomatoes, fresh mozzarella, basil, and extra-virgin olive oil.</p>
+                    </div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-img" style="background-image: url('https://images.unsplash.com/photo-1551183053-bf91a1d81141?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="menu-item-content">
+                        <h3>Osso Buco</h3>
+                        <div class="menu-item-price">$28.95</div>
+                        <p>Slow-braised veal shanks with vegetables, white wine, and broth, served with gremolata and risotto alla Milanese.</p>
+                    </div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-img" style="background-image: url('https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="menu-item-content">
+                        <h3>Tiramisu</h3>
+                        <div class="menu-item-price">$8.95</div>
+                        <p>Classic Italian dessert made with layers of coffee-soaked ladyfingers and mascarpone cream, dusted with cocoa powder.</p>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="menu.html" class="btn">View Full Menu</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <div class="container">
+            <h2 class="section-title">What Our Customers Say</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial">
+                    <p>"The best Italian food I've had outside of Italy. The carbonara is absolutely authentic and delicious!"</p>
+                    <div class="testimonial-author">- Maria R.</div>
+                </div>
+                <div class="testimonial">
+                    <p>"Perfect ambiance, attentive service, and food that transports you straight to the streets of Rome. We'll be back!"</p>
+                    <div class="testimonial-author">- James T.</div>
+                </div>
+                <div class="testimonial">
+                    <p>"We celebrated our anniversary here and couldn't have chosen a better place. The chef even prepared a special dessert for us!"</p>
+                    <div class="testimonial-author">- Sarah & Michael</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Bella Cucina</h3>
+                    <p>Bringing authentic Italian flavors to your table since 2010. Family-owned and passionate about great food.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Opening Hours</h3>
+                    <p>Monday - Thursday: 11:30 AM - 10:00 PM</p>
+                    <p>Friday - Saturday: 11:30 AM - 11:00 PM</p>
+                    <p>Sunday: 12:00 PM - 9:00 PM</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Info</h3>
+                    <p>123 Pasta Street, Foodville, NY 10001</p>
+                    <p>Phone: (555) 123-4567</p>
+                    <p>Email: info@bellacucina.com</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Follow Us</h3>
+                    <div class="social-links">
+                        <a href="#">Facebook</a>
+                        <a href="#">Instagram</a>
+                        <a href="#">Twitter</a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Bella Cucina. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

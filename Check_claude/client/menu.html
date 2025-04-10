@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu - Bella Cucina</title>
+    <style>
+        /* Base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Georgia', serif;
+        }
+        
+        body {
+            background-color: #faf7f2;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header styles */
+        header {
+            background-color: #8b0000;
+            color: #fff;
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            font-style: italic;
+        }
+        
+        .logo span {
+            color: #f8e9a1;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 20px;
+        }
+        
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            transition: color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: #f8e9a1;
+        }
+        
+        /* Menu page header */
+        .page-header {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #fff;
+        }
+        
+        .page-header h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+        }
+        
+        /* Menu navigation */
+        .menu-nav {
+            background-color: #f0e6d2;
+            padding: 15px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 78px;
+            z-index: 99;
+        }
+        
+        .menu-nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+        
+        .menu-nav ul li {
+            margin: 5px 15px;
+        }
+        
+        .menu-nav ul li a {
+            color: #8b0000;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+            transition: color 0.3s;
+            padding: 5px 0;
+            position: relative;
+        }
+        
+        .menu-nav ul li a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: #8b0000;
+            transition: width 0.3s;
+        }
+        
+        .menu-nav ul li a:hover::after {
+            width: 100%;
+        }
+        
+        .menu-nav ul li a:hover {
+            color: #6b0000;
+        }
+        
+        /* Menu sections */
+        .menu-section {
+            padding: 60px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: #8b0000;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: "";
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: #8b0000;
+        }
+        
+        .section-description {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            font-style: italic;
+            color: #666;
+        }
+        
+        /* Menu items */
+        .menu-category {
+            margin-bottom: 60px;
+        }
+        
+        .category-title {
+            font-size: 28px;
+            margin-bottom: 30px;
+            color: #333;
+            text-align: center;
+            font-style: italic;
+        }
+        
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+        
+        .menu-item {
+            display: flex;
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        
+        .menu-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .menu-item-img {
+            width: 30%;
+            background-size: cover;
+            background-position: center;
+            min-height: 180px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .menu-item-img:hover {
+            transform: scale(1.05);
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .menu-item-content {
+            width: 70%;
+            padding: 20px;
+        }
+        
+        .menu-item-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            border-bottom: 1px dashed #ddd;
+            padding-bottom: 5px;
+        }
+        
+        .menu-item h3 {
+            font-size: 22px;
+            color: #8b0000;
+        }
+        
+        .menu-item-price {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .menu-item-description {
+            margin-bottom: 10px;
+            color: #666;
+        }
+        
+        .dietary-info {
+            font-size: 14px;
+            color: #8b0000;
+            font-style: italic;
+        }
+        
+        .wine-bottle-price {
+            font-style: italic;
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        /* Drinks grid */
+        .drinks-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .drink-item {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .drink-item h4 {
+            font-size: 20px;
+            color: #8b0000;
+            margin-bottom: 10px;
+        }
+        
+        .drink-price {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        /* Chef specials */
+        .chef-special {
+            background-color: #8b0000;
+            color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        
+        .chef-special h3 {
+            font-size: 28px;
+            margin-bottom: 15px;
+            color: #f8e9a1;
+        }
+        
+        .chef-special p {
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+        
+        .chef-special-price {
+            font-size: 24px;
+            font-weight: bold;
+            color: #f8e9a1;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 60px 0 30px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-section h3 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #f8e9a1;
+        }
+        
+        .footer-section p, .footer-section a {
+            color: #ccc;
+            margin-bottom: 10px;
+            display: block;
+            text-decoration: none;
+        }
+        
+        .footer-section a:hover {
+            color: #fff;
+        }
+        
+        .social-links a {
+            display: inline-block;
+            margin-right: 15px;
+            color: #fff;
+            font-size: 20px;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid #555;
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .drinks-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            nav ul {
+                margin-top: 20px;
+            }
+            
+            .menu-item {
+                flex-direction: column;
+            }
+            
+            .menu-item-img, .menu-item-content {
+                width: 100%;
+            }
+            
+            .menu-item-img {
+                height: 200px;
+            }
+            
+            .drinks-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-content">
+            <div class="logo">Bella <span>Cucina</span></div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="menu.html">Menu</a></li>
+                    <li><a href="reservations.html">Reservations</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>Our Menu</h1>
+        </div>
+    </section>
+
+    <!-- Menu Navigation -->
+    <nav class="menu-nav">
+        <div class="container">
+            <ul>
+                <li><a href="#appetizers">Antipasti</a></li>
+                <li><a href="#pasta">Pasta</a></li>
+                <li><a href="#pizza">Pizza</a></li>
+                <li><a href="#mains">Secondi</a></li>
+                <li><a href="#desserts">Dolci</a></li>
+                <li><a href="#wines">Wines</a></li>
+                <li><a href="#drinks">Drinks</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Chef's Special -->
+    <div class="container" style="margin-top: 40px;">
+        <div class="chef-special">
+            <h3>Chef's Special of the Month</h3>
+            <p>Risotto al Tartufo Nero - Creamy Arborio rice cooked with black truffle, mushrooms, and Parmigiano-Reggiano, finished with truffle oil</p>
+            <div class="chef-special-price">$32.95</div>
+        </div>
+    </div>
+
+    <!-- Appetizers Section -->
+    <section id="appetizers" class="menu-section">
+        <div class="container">
+            <h2 class="section-title">Antipasti</h2>
+            <p class="section-description">Traditional Italian starters to whet your appetite</p>
+            
+            <div class="menu-grid">
+                <div class="menu-item">
+                    <div class="menu-item-img" style="background-image: url('https://images.unsplash.com/photo-1600628421055-4d30de868b8f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3>Bruschetta al Pomodoro</h3>
+                            <div class="menu-item-price">$9.95</div>
+                        </div>
+                        <p class="menu-item-description">Grilled rustic bread topped with fresh tomatoes, garlic, basil, and extra virgin olive oil.</p>
+                        <p class="dietary-info">Vegetarian</p>
+                    </div>
+                </div>
+                
+                <div class="menu-item">
+                    <div class="menu-item-img" style="background-image: url('https://images.unsplash.com/photo-1604909052743-94e838986d24?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3>Calamari Fritti</h3>
+                            <div class="menu-item-price">$14.95</div>
+                        </div>
+                        <p class="menu-item-description">Lightly battered and fried calamari served with marinara sauce and lemon wedges.</p>
+                    </div>
+                </div>
+                
+                <div class="menu-item">
+                    <div class="menu-item-img" style="background-image: url('https://images.unsplash.com/photo-1676037150408-4b59a542fa7c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3>Antipasto Misto</h3>
+                            <div class="menu-item-price">$18.95</div>
+                        </div>
+                        <p class="menu-item-description">Selection of Italian cured meats, cheeses, marinated vegetables, and olives.</p>
+                        <p class="dietary-info">Gluten-free option available</p>
+                    </div>
+                </div>
+                
+                <div class="menu-item">
+                    <div class="menu-item-img" style="background-image: url('https://images.unsplash.com/photo-1595587870672-c79b47875c6a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3>Caprese</h3>
+                            <div class="menu-item-price">$12.95</div>
+                        </div>
+                        <p class="menu-item-description">Fresh mozzarella, sliced tomatoes, and basil, drizzled with balsamic glaze and olive oil.</p>
+                        <p class="dietary-info">Vegetarian, Gluten-free</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pasta Section -->
+    <section id="pasta" class="menu-section" style="background-color: #f0e6d2;">
+        <div class="container">
+            <h2 class="section-title">Pasta</h2>
+            <p class="section-description">Handmade fresh pasta prepared according to traditional recipes</p>
+            
+            <div class="menu-grid">
+                <div class="menu-item">
+                    <div class="menu-item-img" style="background-image: url('https://images.unsplash.com/photo-1612874742237-6526221588e3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3>Spaghetti Carbonara</h3>
+                            <div class="menu-item-price">$16.95</div>
+                        </div>
+                        <p class="menu-item-description">Classic creamy pasta with pancetta, eggs, Pecorino Romano cheese, and freshly ground black pepper.</p>
+                    </div>
+                </div>
+                
+                <div class="menu-item">
+                    <div class="menu-item-img" style="background-image: url('https://images.unsplash.com/photo-1645112411341-6c4fd023714a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3>Fettuccine Alfredo</h3>
+                            <div class="menu-item-price">$15.95</div>
+                        </div>
+                        <p class="menu-item-description">Ribbon pasta in a rich and creamy sauce made with butter and Parmigiano-Reggiano cheese.</p>
+                        <p class="dietary-info">Vegetarian</p>
+                    </div>
+                </div>
+                
+                <div class="menu-item">
+                    <div class="menu-item-img" style="background-image: url('https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3>Pappardelle al Ragù</h3>
+                            <div class="menu-item-price">$18.95</div>
+                        </div>
+                        <p class="menu-item-description">Wide ribbon pasta with slow-cooked beef and pork ragù, finished with grated Parmesan.</p>
+                    </div>
+                </div>
+                
+                <div class="menu-item">
+                    <div class="menu-item-img" style="background-image: url('https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3>Ravioli di Ricotta e Spinaci</h3>
+                            <div class="menu-item-price">$17.95</div>
+                        </div>
+                        <p class="menu-item-description">Handmade ravioli filled with ricotta and spinach, served with sage butter sauce.</p>
+                        <p class="dietary-info">Vegetarian</p>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <div class="menu-item-img" style="background-image: url('https://images.unsplash.com/photo-1563379926898-05f4575a45d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3>Linguine alle Vongole</h3>
+                            <div class="menu-item-price">$19.95</div>
+                        </div>
+                        <p class="menu-item-description">Thin flat pasta with fresh clams, garlic, white wine, parsley, and a touch of chili.</p>
+                    </div>
+                </div>
+                
+                <div class="menu-item">
+                    <div class="menu-item-img" style="background-image: url('https://images.unsplash.com/photo-1633436374961-09b92742047b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3>Lasagna alla Bolognese</h3>
+                            <div class="menu-item-price">$18.95</div>
+                        </div>
+                        <p class="menu-item-description">Layers of pasta, rich meat sauce, béchamel, and Parmigiano-Reggiano cheese.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pizza Section -->
+    <section id="pizza" class="menu-section">
+        <div class="container">
+            <h2 class="section-title">Pizza</h2>
+            <p class="section-description">Traditional pizzas baked in our wood-fired oven</p>
+            
+            <div class="menu-grid">
+                <div class="menu-item">
+                    <div class="menu-item-img" style="background-image: url('https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3>Margherita</h3>
+                            <div class="menu-item-price">$14.95</div>
+                        </div>
+                        <p class="menu-item-description">Classic Neapolitan pizza with San Marzano tomatoes, fresh mozzarella, basil, and extra-virgin olive oil.</p>
+                        <p class="dietary-info">Vegetarian</p>
+                    </div>
+                </div>
+                
+                <div class="menu-item">
+                    <div class="menu-item-img" style="background-image: url('https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3>Quattro Formaggi</h3>
+                            <div class="menu-item-price">$16.95</div>
+                        </div>
+                        <p class="menu-item-description">Four cheese pizza with mozzarella, gorgonzola, fontina, and Parmigiano-Reggiano.</p>
+                        <p class="dietary-info">Vegetarian</p>
+                    </div>
+                </div>
+                
+                <div class="menu-item">
+                    <div class="menu-item-img" style="background-image: url('https://images.unsplash.com/photo-1628840042765-356cda07504e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3>Diavola</h3>
+                            <div class="menu-item-price">$16.95</div>
+                        </div>
+                        <p class="menu-item-description">Spicy pizza with tomato sauce, mozzarella, spicy salami, and chili flakes.</p>
+                    </div>
+                </div>
+                
+                <div class="menu-item">
+                    <div class="menu-item-img" style="background-image: url('https://images.unsplash.com/photo-1516100882582-96c3a05fe590?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3>Prosciutto e Rucola</h3>
+                            <div class="menu-item-price">$17.95</div>
+                        </div>
+                        <p class="menu-item-description">Pizza topped with prosciutto di Parma, fresh arugula, and shaved Parmigiano-Reggiano.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Courses Section -->
+    <section id="mains" class="menu-section" style="background-color: #f0e6d2;">
+        <div class="container">
+            <h2 class="section-title">Secondi</h2>
+            <p class="section-description">Traditional Italian main courses</p>
+            
+            <div class="menu-grid">
+                <div class="menu-item">
+                    <div class="menu-item-img" style="background-image: url('https://images.unsplash.com/photo-1551183053-bf91a1d81141?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3>Osso Buco</h3>
+                            <div class="menu-item-price">$28.95</div>
+                        </div>
+                        <p class="menu-item-description">Slow-braised veal shanks with vegetables, white wine, and broth, served with gremolata and risotto alla Milanese.</p>
+                    </div>
+                </div>
+                
+                <div class="menu-item">
+                    <div class="menu-item-img" style="background-image: url('https://images.unsplash.com/photo-1632778149955-e80f8ceca2e8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3>Pollo alla Cacciatora</h3>
+                            <div class="menu-item-price">$22.95</div>
+                        </div>
+                        <p class="menu-item-description">Hunter-style chicken braised with tomatoes, onions, herbs, olives, and red wine, served with polenta.</p>
+                        <p class="dietary-info">Gluten-free</p>
+                    </div>
+                </div>
+                
+                <div class="menu-item">
+                    <div class="menu-item-img" style="background-image: url('https://images.unsplash.com/photo-1598511796432-32663d0875bd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3>Saltimbocca alla Romana</h3>
+                            <div class="menu-item-price">$24.95</div>
+                        </div>
+                        <p class="menu-item-description">Veal escalopes topped with prosciutto and sage, sautéed in white wine, served with roasted potatoes.</p>
+                    </div>
+                </div>
+                
+                <div class="menu-item">
+                    <div class="menu-item-img" style="background-image: url('https://images.unsplash.com/photo-1534080564583-6be75777b70a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3>Branzino al Forno</h3>
+                            <div class="menu-item-price">$26.95</div>
+                        </div>
+                        <p class="menu-item-description">Whole roasted Mediterranean sea bass with lemon, herbs, and olive oil, served with seasonal vegetables.</p>
+                        <p class="dietary-info">Gluten-free</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Desserts Section -->
+    <section id="desserts" class="menu-section">
+        <div class="container">
+            <h2 class="section-title">Dolci</h2>
+            <p class="section-description">Sweet creations to complete your meal</p>
+            
+            <div class="menu-grid">
+                <div class="menu-item">
+                    <div class="menu-item-img" style="background-image: url('https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3>Tiramisu</h3>
+                            <div class="menu-item-price">$8.95</div>
+                        </div>
+                        <p class="menu-item-description">Classic Italian dessert made with layers of coffee-soaked ladyfingers and mascarpone cream, dusted with cocoa powder.</p>
+                        <p class="dietary-info">Vegetarian</p>
+                    </div>
+                </div>
+                
+                <div class="menu-item">
+                    <div class="menu-item-img" style="background-image: url('https://images.unsplash.com/photo-1579954115545-a95591f28bfc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3>Panna Cotta</h3>
+                            <div class="menu-item-price">$7.95</div>
+                        </div>
+                        <p class="menu-item-description">Silky vanilla cream pudding topped with mixed berry compote or caramel sauce.</p>
+                        <p class="dietary-info">Gluten-free</p>
+                    </div>
+                </div>
+                
+                <div class="menu-item">
+                    <div class="menu-item-img" style="background-image: url('https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3>Cannoli Siciliani</h3>
+                            <div class="menu-item-price">$8.95</div>
+                        </div>
+                        <p class="menu-item-description">Crisp pastry tubes filled with sweet ricotta cream, chocolate chips, and candied orange, dusted with powdered sugar.</p>
+                        <p class="dietary-info">Vegetarian</p>
+                    </div>
+                </div>
+                
+                <div class="menu-item">
+                    <div class="menu-item-img" style="background-image: url('https://images.unsplash.com/photo-1624353365286-3f8d62daad51?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3>Torta di Cioccolato</h3>
+                            <div class="menu-item-price">$9.95</div>
+                        </div>
+                        <p class="menu-item-description">Warm chocolate cake with a molten center, served with vanilla gelato.</p>
+                        <p class="dietary-info">Vegetarian</p>
+                    </div>
+                </div>
+                
+                <div class="menu-item">
+                    <div class="menu-item-img" style="background-image: url('https://images.unsplash.com/photo-1579954115545-a95591f28bfc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3>Affogato</h3>
+                            <div class="menu-item-price">$6.95</div>
+                        </div>
+                        <p class="menu-item-description">Vanilla gelato "drowned" with a shot of hot espresso.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Wine Section -->
+    <section id="wines" class="menu-section" style="background-color: #f0e6d2;">
+        <div class="container">
+            <h2 class="section-title">Wines</h2>
+            <p class="section-description">Carefully selected Italian wines to complement your meal</p>
+            
+            <div class="menu-grid">
+                <!-- Red Wines -->
+                <div class="menu-item">
+                    <div class="menu-item-img" style="background-image: url('https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3>Chianti Classico Riserva</h3>
+                            <div class="menu-item-price">$12/glass</div>
+                        </div>
+                        <p class="menu-item-description">Full-bodied Tuscan wine with notes of dark cherries and spices</p>
+                        <p class="wine-bottle-price">Bottle: $48</p>
+                    </div>
+                </div>
+                
+                <div class="menu-item">
+                    <div class="menu-item-img" style="background-image: url('https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3>Barolo DOCG</h3>
+                            <div class="menu-item-price">$15/glass</div>
+                        </div>
+                        <p class="menu-item-description">Prestigious Piedmontese wine with complex aromas of roses and tar</p>
+                        <p class="wine-bottle-price">Bottle: $65</p>
+                    </div>
+                </div>
+
+                <!-- White Wines -->
+                <div class="menu-item">
+                    <div class="menu-item-img" style="background-image: url('https://images.unsplash.com/photo-1584916201218-f4242ceb4809?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3>Pinot Grigio</h3>
+                            <div class="menu-item-price">$10/glass</div>
+                        </div>
+                        <p class="menu-item-description">Crisp and refreshing with citrus and green apple notes</p>
+                        <p class="wine-bottle-price">Bottle: $38</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Drinks Section -->
+    <section id="drinks" class="menu-section">
+        <div class="container">
+            <h2 class="section-title">Drinks</h2>
+            <p class="section-description">Cocktails, beers, and non-alcoholic beverages</p>
+            
+            <div class="menu-grid">
+                <div class="menu-item">
+                    <div class="menu-item-img" style="background-image: url('https://images.unsplash.com/photo-1560512823-829485b8bf24?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3>Aperol Spritz</h3>
+                            <div class="menu-item-price">$12</div>
+                        </div>
+                        <p class="menu-item-description">Classic Italian aperitif with Aperol, Prosecco, and soda</p>
+                    </div>
+                </div>
+                
+                <div class="menu-item">
+                    <div class="menu-item-img" style="background-image: url('https://images.unsplash.com/photo-1551751299-1b51cab2694c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3>Negroni</h3>
+                            <div class="menu-item-price">$13</div>
+                        </div>
+                        <p class="menu-item-description">Equal parts gin, Campari, and sweet vermouth</p>
+                    </div>
+                </div>
+                
+                <div class="menu-item">
+                    <div class="menu-item-img" style="background-image: url('https://images.unsplash.com/photo-1608270586620-248524c67de9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3>Italian Craft Beer</h3>
+                            <div class="menu-item-price">$8</div>
+                        </div>
+                        <p class="menu-item-description">Selection of artisanal Italian beers</p>
+                    </div>
+                </div>
+                
+                <div class="menu-item">
+                    <div class="menu-item-img" style="background-image: url('https://images.unsplash.com/photo-1523371054106-bbf80586c38c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3>Espresso</h3>
+                            <div class="menu-item-price">$3.50</div>
+                        </div>
+                        <p class="menu-item-description">Traditional Italian coffee</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
