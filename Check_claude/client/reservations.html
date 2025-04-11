@@ -313,15 +313,76 @@
             
             nav ul {
                 margin-top: 20px;
+                flex-wrap: wrap;
+                justify-content: center;
             }
-            
-            .form-row {
-                grid-template-columns: 1fr;
-                gap: 20px;
+
+            nav ul li {
+                margin: 5px 10px;
             }
-            
-            .footer-content {
-                grid-template-columns: 1fr;
+
+            nav ul li a {
+                font-size: 16px;
+                padding: 8px 12px;
+            }
+
+            .page-header h1 {
+                font-size: 32px;
+            }
+
+            .page-header p {
+                font-size: 16px;
+            }
+
+            .restaurant-layout {
+                width: 100%;
+                max-width: 350px;
+                height: auto;
+                aspect-ratio: 1;
+            }
+
+            .table {
+                width: 45px;
+                height: 30px;
+                font-size: 14px;
+            }
+
+            .kitchen {
+                width: 70px;
+                height: 70px;
+                font-size: 14px;
+            }
+
+            .tooltip {
+                padding: 8px 12px;
+                font-size: 12px;
+                min-width: 120px;
+            }
+
+            .modal-content {
+                width: 95%;
+                max-width: 400px;
+                padding: 20px;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                padding: 10px;
+                font-size: 16px; /* Better touch target size */
+            }
+
+            .btn {
+                padding: 15px 25px; /* Larger touch target */
+                font-size: 16px;
+            }
+        }
+
+        /* Additional tablet styles */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .restaurant-layout {
+                width: 400px;
+                height: 400px;
             }
         }
 
@@ -716,8 +777,11 @@
                 tooltip.innerHTML = `<strong>Table ${tableNumber}</strong><br>
                                Capacity: ${tableInfo.capacity} people<br>
                                Location: ${tableInfo.location}`;
-                tooltip.style.left = `${event.pageX - 75}px`;
-                tooltip.style.top = `${event.pageY - 80}px`;
+                
+                const touch = event.pageY ? event : event.touches[0];
+                tooltip.style.left = `${touch.pageX - 60}px`;
+                tooltip.style.top = `${touch.pageY - 100}px`;
+                
                 requestAnimationFrame(() => {
                     tooltip.classList.add('visible');
                 });
@@ -759,6 +823,22 @@
                 const tableNumber = table.getAttribute('data-table');
                 selectTable(tableNumber);
                 tooltip.classList.remove('visible');
+            });
+
+            table.addEventListener('touchstart', (event) => {
+                event.preventDefault();
+                const tableNumber = table.getAttribute('data-table');
+                showTooltip(tableNumber, event.touches[0]);
+            });
+
+            table.addEventListener('touchend', () => {
+                hideTooltip();
+            });
+
+            table.addEventListener('touchmove', (event) => {
+                event.preventDefault();
+                const tableNumber = table.getAttribute('data-table');
+                showTooltip(tableNumber, event.touches[0]);
             });
         });
 
