@@ -898,43 +898,41 @@
                 const formData = new FormData(this);
                 const data = Object.fromEntries(formData.entries());
 
-                let response;
+                // Update URL to point to Render deployment
+                const RENDER_API_URL = 'https://bella-cucina.onrender.com/api/reservations';
+
+                // First check if server is available
                 try {
-                    response = await fetch('/api/reservations', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(data)
-                    });
-                } catch (networkError) {
-                    throw new Error('Unable to connect to server. Please check your internet connection and try again.');
+                    const healthCheck = await fetch(RENDER_API_URL.replace('/reservations', '/health'));
+                    if (!healthCheck.ok) {
+                        throw new Error('Server is currently unavailable. Please try again later.');
+                    }
+                } catch (healthError) {
+                    throw new Error('Cannot connect to server. Please check your internet connection.');
                 }
+
+                // Submit reservation
+                const response = await fetch(RENDER_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
 
                 if (!response.ok) {
-                    if (response.status === 503) {
-                        throw new Error('Service temporarily unavailable. Please try again later.');
-                    } else if (response.status === 400) {
-                        throw new Error('Invalid reservation data. Please check your inputs.');
-                    } else if (response.status === 409) {
-                        throw new Error('This table is already reserved for the selected time.');
-                    } else {
-                        throw new Error('An error occurred while processing your reservation. Please try again.');
-                    }
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.message || 'Server error: ' + response.status);
                 }
 
-                let result;
-                try {
-                    result = await response.json();
-                } catch (jsonError) {
-                    throw new Error('Invalid response from server. Please try again.');
-                }
-
+                const result = await response.json();
+                
                 if (result.success) {
                     showMessage('Your reservation has been successfully submitted!');
                     this.reset();
                     selectedTable = null;
                     document.querySelector('.table.selected')?.classList.remove('selected');
+                    document.getElementById('selectedTable').value = '';
                 } else {
                     throw new Error(result.message || 'Failed to submit reservation');
                 }
