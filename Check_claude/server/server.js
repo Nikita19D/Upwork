@@ -13,27 +13,22 @@ app.use(express.static(path.join(__dirname, '../client')));
 
 // Database configuration for Render
 const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
+    connectionString: 'postgresql://schema_uez0_user:BVwbEKyvGYwKht8lJj0kncVbpTDA154p@dpg-cvslha6uk2gs73bpfohg-a.frankfurt-postgres.render.com/schema_uez0',
     ssl: {
-        rejectUnauthorized: false // Required for Render PostgreSQL
+        rejectUnauthorized: false
     },
     max: 20,
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 2000,
 });
 
-// Add connection error handling
-pool.on('error', (err) => {
-    console.error('Unexpected error on idle client', err);
-    process.exit(-1);
-});
-
 // Test database connection
 pool.query('SELECT NOW()', (err, res) => {
     if (err) {
         console.error('Database connection error:', err);
+        process.exit(1); // Exit if cannot connect to database
     } else {
-        console.log('Database connected successfully to:', process.env.DATABASE_URL);
+        console.log('Connected to Render PostgreSQL database');
     }
 });
 

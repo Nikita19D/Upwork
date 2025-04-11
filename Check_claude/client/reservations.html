@@ -898,19 +898,37 @@
                 const formData = new FormData(this);
                 const data = Object.fromEntries(formData.entries());
 
-                const response = await fetch('/api/reservations', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
-
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                let response;
+                try {
+                    response = await fetch('/api/reservations', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+                } catch (networkError) {
+                    throw new Error('Unable to connect to server. Please check your internet connection and try again.');
                 }
 
-                const result = await response.json();
+                if (!response.ok) {
+                    if (response.status === 503) {
+                        throw new Error('Service temporarily unavailable. Please try again later.');
+                    } else if (response.status === 400) {
+                        throw new Error('Invalid reservation data. Please check your inputs.');
+                    } else if (response.status === 409) {
+                        throw new Error('This table is already reserved for the selected time.');
+                    } else {
+                        throw new Error('An error occurred while processing your reservation. Please try again.');
+                    }
+                }
+
+                let result;
+                try {
+                    result = await response.json();
+                } catch (jsonError) {
+                    throw new Error('Invalid response from server. Please try again.');
+                }
 
                 if (result.success) {
                     showMessage('Your reservation has been successfully submitted!');
@@ -921,8 +939,8 @@
                     throw new Error(result.message || 'Failed to submit reservation');
                 }
             } catch (error) {
-                showMessage(error.message, 'error');
                 console.error('Submission error:', error);
+                showMessage(error.message, 'error');
             } finally {
                 submitButton.disabled = false;
                 submitButton.textContent = 'Reserve Now';
