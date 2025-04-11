@@ -409,6 +409,33 @@
             background-color: #8b0000;
             color: #fff;
         }
+
+        /* Tooltip styles */
+        .tooltip {
+            position: absolute;
+            background-color: #fff;
+            color: #333;
+            padding: 12px 15px;
+            border: 2px solid #8b0000;
+            border-radius: 6px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            font-size: 14px;
+            opacity: 0;
+            visibility: hidden;
+            z-index: 1000;
+            min-width: 150px;
+            text-align: center;
+            font-weight: 500;
+            transition: all 0.3s ease-in-out;
+            transform: translateY(10px);
+            pointer-events: none;
+        }
+
+        .tooltip.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
     </style>
 </head>
 <body>
@@ -584,6 +611,9 @@
         </div>
     </div>
 
+    <!-- Tooltip -->
+    <div id="tableTooltip" class="tooltip"></div>
+
     <!-- Reservation Policy -->
     <section class="reservation-policy">
         <div class="container policy-container">
@@ -649,6 +679,28 @@
     <script>
         let selectedTable = null;
 
+        const tableData = {
+            1: { capacity: 2, location: 'Window' },
+            2: { capacity: 4, location: 'Window' },
+            3: { capacity: 4, location: 'Window' },
+            4: { capacity: 6, location: 'Window' },    // Changed from Bar
+            5: { capacity: 6, location: 'Window' },     // Changed from Bar
+            6: { capacity: 4, location: 'Patio' },
+            7: { capacity: 4, location: 'Patio' },
+            8: { capacity: 8, location: 'Private Room' },
+            9: { capacity: 2, location: 'Bar' },
+            10: { capacity: 2, location: 'Bar' },
+            11: { capacity: 4, location: 'Center' },
+            12: { capacity: 4, location: 'Center' },
+            13: { capacity: 6, location: 'Center' },
+            14: { capacity: 6, location: 'Center' },
+            15: { capacity: 4, location: 'Patio' },
+            16: { capacity: 4, location: 'Patio' }
+        };
+
+        const tooltip = document.getElementById('tableTooltip');
+        let tooltipTimeout;
+
         function openModal() {
             document.getElementById('tableModal').style.display = 'flex';
         }
@@ -657,12 +709,35 @@
             document.getElementById('tableModal').style.display = 'none';
         }
 
+        function showTooltip(tableNumber, event) {
+            clearTimeout(tooltipTimeout);
+            const tableInfo = tableData[tableNumber];
+            if (tableInfo) {
+                tooltip.innerHTML = `<strong>Table ${tableNumber}</strong><br>
+                               Capacity: ${tableInfo.capacity} people<br>
+                               Location: ${tableInfo.location}`;
+                tooltip.style.left = `${event.pageX - 75}px`;
+                tooltip.style.top = `${event.pageY - 80}px`;
+                requestAnimationFrame(() => {
+                    tooltip.classList.add('visible');
+                });
+            }
+        }
+
+        function hideTooltip() {
+            tooltipTimeout = setTimeout(() => {
+                tooltip.classList.remove('visible');
+            }, 100);
+        }
+
         function selectTable(tableNumber) {
             const tables = document.querySelectorAll('.table');
             tables.forEach(table => table.classList.remove('selected'));
             const selected = document.querySelector(`.table[data-table="${tableNumber}"]`);
             selected.classList.add('selected');
             selectedTable = tableNumber;
+            document.getElementById('selectedTable').value = `Table ${tableNumber}`;
+            hideTooltip();
         }
 
         function confirmTable() {
@@ -673,6 +748,19 @@
                 alert('Please select a table.');
             }
         }
+
+        document.querySelectorAll('.table').forEach(table => {
+            table.addEventListener('mouseenter', event => {
+                const tableNumber = table.getAttribute('data-table');
+                showTooltip(tableNumber, event);
+            });
+            table.addEventListener('mouseleave', hideTooltip);
+            table.addEventListener('click', () => {
+                const tableNumber = table.getAttribute('data-table');
+                selectTable(tableNumber);
+                tooltip.classList.remove('visible');
+            });
+        });
 
         // Update form submission handler
         document.getElementById('reservationForm').onsubmit = function(e) {

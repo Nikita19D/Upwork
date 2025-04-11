@@ -155,8 +155,8 @@ INSERT INTO tables (table_number, capacity, location) VALUES
 (1, 2, 'Window'),
 (2, 4, 'Window'),
 (3, 4, 'Window'),
-(4, 6, 'Center'),
-(5, 6, 'Center'),
+(4, 6, 'Window'),    -- Changed from Bar
+(5, 6, 'Window'),     -- Changed from Bar
 (6, 4, 'Patio'),
 (7, 4, 'Patio'),
 (8, 8, 'Private Room'),
@@ -164,8 +164,8 @@ INSERT INTO tables (table_number, capacity, location) VALUES
 (10, 2, 'Bar'),
 (11, 4, 'Center'),
 (12, 4, 'Center'),
-(13, 6, 'Window'),
-(14, 6, 'Window'),
+(13, 6, 'Center'), -- Changed from Bar
+(14, 6, 'Center'), -- Changed from Bar
 (15, 4, 'Patio'),
 (16, 4, 'Patio');
 
