@@ -1,23 +1,20 @@
 {
   "name": "bella-cucina",
   "version": "1.0.0",
-  "description": "Bella Cucina Restaurant Website",
+  "description": "Italian Restaurant Reservation System",
   "main": "server/server.js",
   "scripts": {
     "start": "node server/server.js",
-    "build": "echo 'No build step required'",
     "dev": "nodemon server/server.js"
   },
   "dependencies": {
     "express": "^4.17.1",
     "pg": "^8.7.1",
     "cors": "^2.8.5",
-    "body-parser": "^1.19.0",
-    "dotenv": "^10.0.0",
-    "path": "^0.12.7"
+    "dotenv": "^10.0.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.12"
+    "nodemon": "^2.0.15"
   },
   "engines": {
     "node": ">=14.0.0"

@@ -10,9 +10,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../client')));
-app.use('/assets', express.static(path.join(__dirname, '../client/assets')));
 
-// Database connection
+// Database connection for Render
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: {
@@ -20,43 +19,44 @@ const pool = new Pool({
     }
 });
 
-// API Routes
+// Reservation endpoint
 app.post('/api/reservations', async (req, res) => {
     const client = await pool.connect();
     try {
         await client.query('BEGIN');
-        
-        const { name, email, phone, table, date, time, guests, requests, occasion } = req.body;
+        const { name, email, phone, table, date, time, guests, requests } = req.body;
         const tableNumber = table.replace('Table ', '');
 
+        // Insert customer
         const customerResult = await client.query(
-            `INSERT INTO customers (first_name, email, phone) 
+            `INSERT INTO customers (first_name, email, phone)
              VALUES ($1, $2, $3)
-             ON CONFLICT (email) DO UPDATE SET customer_id = EXCLUDED.customer_id
+             ON CONFLICT (email) DO UPDATE SET phone = $3
              RETURNING customer_id`,
             [name, email, phone]
         );
         const customerId = customerResult.rows[0].customer_id;
 
-        const tableResult = await client.query(
-            'SELECT table_id FROM tables WHERE table_number = $1',
-            [tableNumber]
-        );
-        const tableId = tableResult.rows[0].table_id;
-
+        // Create reservation
         await client.query(
-            `INSERT INTO reservations 
-             (customer_id, table_id, reservation_date, reservation_time, num_guests, special_requests)
+            `INSERT INTO reservations (customer_id, table_id, reservation_date, 
+             reservation_time, num_guests, special_requests)
              VALUES ($1, $2, $3, $4, $5, $6)`,
-            [customerId, tableId, date, time, guests, requests]
+            [customerId, tableNumber, date, time, guests, requests]
         );
 
         await client.query('COMMIT');
-        res.json({ success: true, message: 'Reservation successful' });
+        res.json({ 
+            success: true, 
+            message: 'You have successfully reserved your table!' 
+        });
 
     } catch (err) {
         await client.query('ROLLBACK');
-        res.json({ success: false, message: err.message });
+        res.status(500).json({ 
+            success: false, 
+            message: 'Error making reservation: ' + err.message 
+        });
     } finally {
         client.release();
     }
@@ -68,6 +68,4 @@ app.get('*', (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

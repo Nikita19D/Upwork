@@ -9,8 +9,6 @@ services:
         fromDatabase:
           name: bella-cucina-db
           property: connectionString
-      - key: NODE_ENV
-        value: production
 
 databases:
   - name: bella-cucina-db
