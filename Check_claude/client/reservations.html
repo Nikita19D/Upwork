@@ -203,6 +203,11 @@
         .btn:hover {
             background-color: #6b0000;
         }
+
+        .btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
         
         /* Policy section */
         .reservation-policy {
@@ -496,6 +501,31 @@
             opacity: 1;
             visibility: visible;
             transform: translateY(0);
+        }
+
+        .message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 4px;
+            color: #fff;
+            font-weight: 500;
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .message.success {
+            background-color: #4CAF50;
+        }
+
+        .message.error {
+            background-color: #f44336;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
     </style>
 </head>
@@ -842,33 +872,61 @@
             });
         });
 
-        // Update form submission handler
-        document.getElementById('reservationForm').onsubmit = function(e) {
-            e.preventDefault();
-            const formData = new FormData(this);
-            const data = {};
-            formData.forEach((value, key) => data[key] = value);
+        function showMessage(message, type = 'success') {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.textContent = message;
+            document.body.appendChild(messageDiv);
 
-            fetch('/api/reservations', {  // Updated to use relative path
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Reservation successful!');
-                    this.reset();
-                } else {
-                    alert('Error: ' + data.message);
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 5000);
+        }
+
+        document.getElementById('reservationForm').onsubmit = async function(e) {
+            e.preventDefault();
+            
+            const submitButton = this.querySelector('button[type="submit"]');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Submitting...';
+
+            try {
+                if (!selectedTable) {
+                    throw new Error('Please select a table first');
                 }
-            })
-            .catch(error => {
-                alert('Error submitting reservation');
-                console.error('Error:', error);
-            });
+
+                const formData = new FormData(this);
+                const data = Object.fromEntries(formData.entries());
+
+                const response = await fetch('/api/reservations', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showMessage('Your reservation has been successfully submitted!');
+                    this.reset();
+                    selectedTable = null;
+                    document.querySelector('.table.selected')?.classList.remove('selected');
+                } else {
+                    throw new Error(result.message || 'Failed to submit reservation');
+                }
+            } catch (error) {
+                showMessage(error.message, 'error');
+                console.error('Submission error:', error);
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Reserve Now';
+            }
         };
     </script>
 </body>
