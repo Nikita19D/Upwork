@@ -7,7 +7,11 @@ const path = require('path');
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type']
+}));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../client')));
 
@@ -32,10 +36,22 @@ pool.query('SELECT NOW()', (err, res) => {
     }
 });
 
+// Health check endpoint
+app.get('/api/health', async (req, res) => {
+    try {
+        await pool.query('SELECT 1');
+        res.json({ status: 'healthy', message: 'Server is running' });
+    } catch (err) {
+        console.error('Health check failed:', err);
+        res.status(503).json({ status: 'unhealthy', message: err.message });
+    }
+});
+
 // Reservation endpoint
 app.post('/api/reservations', async (req, res) => {
-    const client = await pool.connect();
+    let client;
     try {
+        client = await pool.connect();
         await client.query('BEGIN');
         const { name, email, phone, table, date, time, guests, requests } = req.body;
         const tableNumber = table.replace('Table ', '');
@@ -65,19 +81,35 @@ app.post('/api/reservations', async (req, res) => {
         });
 
     } catch (err) {
-        await client.query('ROLLBACK');
+        console.error('Reservation error:', err);
+        if (!client) {
+            return res.status(503).json({
+                success: false,
+                message: 'Database connection failed'
+            });
+        }
+        await client?.query('ROLLBACK');
         res.status(500).json({ 
             success: false, 
             message: 'Error making reservation: ' + err.message 
         });
     } finally {
-        client.release();
+        client?.release();
     }
 });
 
 // Serve static files
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../client/index.html'));
+});
+
+// Add error logging middleware
+app.use((err, req, res, next) => {
+    console.error('Server error:', err);
+    res.status(500).json({ 
+        success: false, 
+        message: 'Internal server error'
+    });
 });
 
 // Start server
