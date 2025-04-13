@@ -4,6 +4,9 @@ services:
     env: node
     buildCommand: npm install
     startCommand: node server/server.js
+    healthCheckPath: /api/health
+    healthCheckTimeout: 300
+    autoDeploy: true
     envVars:
       - key: NODE_ENV
         value: production
@@ -14,12 +17,15 @@ services:
       - key: DB_MAX_CONNECTIONS
         value: 20
       - key: DB_IDLE_TIMEOUT_MS
-        value: 30000
+        value: 60000
       - key: DB_CONNECTION_TIMEOUT_MS
-        value: 5000
-      - key: CORS_ORIGIN
-        value: https://bella-cucina.onrender.com
-    healthCheckPath: /api/health
+        value: 10000
+      - key: MAX_RETRIES
+        value: 5
+    disk:
+      name: tmp
+      mountPath: /tmp
+      sizeGB: 0.5
     numInstances: 1
     scaling:
       minInstances: 1
