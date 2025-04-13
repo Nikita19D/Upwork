@@ -774,8 +774,8 @@
             1: { capacity: 2, location: 'Window' },
             2: { capacity: 4, location: 'Window' },
             3: { capacity: 4, location: 'Window' },
-            4: { capacity: 6, location: 'Window' },    // Changed from Bar
-            5: { capacity: 6, location: 'Window' },     // Changed from Bar
+            4: { capacity: 6, location: 'Window' },
+            5: { capacity: 6, location: 'Window' },
             6: { capacity: 4, location: 'Patio' },
             7: { capacity: 4, location: 'Patio' },
             8: { capacity: 8, location: 'Private Room' },
@@ -884,61 +884,67 @@
         }
 
         async function checkServerConnection(retries = 3) {
+            const API_URL = 'http://localhost:3000/api';
             const RENDER_API_URL = 'https://bella-cucina.onrender.com/api';
-            const timeout = 8000; // Increased timeout to 8 seconds
+            const timeout = 10000;
 
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), timeout);
 
             try {
-                // Check browser's online status first
                 if (!navigator.onLine) {
                     return false;
                 }
 
                 for (let i = 0; i < retries; i++) {
                     try {
-                        const startTime = Date.now();
-                        const response = await fetch(`${RENDER_API_URL}/health`, {
-                            signal: controller.signal,
-                            headers: {
-                                'Cache-Control': 'no-cache',
-                                'Pragma': 'no-cache'
-                            },
-                            mode: 'cors',
-                            credentials: 'same-origin'
-                        });
-
-                        const responseTime = Date.now() - startTime;
-                        console.log(`Server response time: ${responseTime}ms`);
-
-                        if (!response.ok) {
-                            throw new Error(`Server returned ${response.status}`);
+                        const urls = [RENDER_API_URL];
+                        if (process.env.NODE_ENV !== 'production') {
+                            urls.unshift(API_URL);
                         }
 
-                        const health = await response.json();
-                        
-                        // Check both server and database status
-                        if (health.status === 'healthy' && health.database === 'connected') {
-                            console.log('Server and database are healthy');
-                            return true;
-                        } else {
-                            console.warn('Server is degraded:', health);
-                            throw new Error('Server is not fully operational');
+                        for (const baseUrl of urls) {
+                            try {
+                                console.log(`Attempting connection to ${baseUrl}`);
+                                const response = await fetch(`${baseUrl}/health`, {
+                                    signal: controller.signal,
+                                    headers: {
+                                        'Cache-Control': 'no-cache',
+                                        'Pragma': 'no-cache'
+                                    },
+                                    mode: 'cors',
+                                    credentials: 'include'
+                                });
+
+                                if (!response.ok) {
+                                    console.warn(`Server returned ${response.status} for ${baseUrl}`);
+                                    continue;
+                                }
+
+                                const health = await response.json();
+                                if (health.status === 'healthy' && health.database === 'connected') {
+                                    console.log('Successfully connected to:', baseUrl);
+                                    window.API_BASE_URL = baseUrl;
+                                    return true;
+                                }
+                            } catch (urlError) {
+                                console.warn(`Failed to connect to ${baseUrl}:`, urlError);
+                            }
+                        }
+
+                        if (i < retries - 1) {
+                            const delay = Math.min(1000 * Math.pow(2, i), 10000);
+                            console.log(`Retrying in ${delay}ms...`);
+                            await new Promise(resolve => setTimeout(resolve, delay));
                         }
                     } catch (err) {
-                        console.warn(`Connection attempt ${i + 1} failed:`, err);
-                        if (i === retries - 1) {
-                            throw err;
-                        }
-                        // Exponential backoff with jitter
-                        const backoffDelay = Math.min(1000 * Math.pow(2, i) + Math.random() * 1000, 10000);
-                        await new Promise(resolve => setTimeout(resolve, backoffDelay));
+                        console.error(`Attempt ${i + 1} failed:`, err);
+                        if (i === retries - 1) throw err;
                     }
                 }
                 return false;
             } catch (err) {
-                console.error('Final connection check failed:', err);
+                console.error('Connection check failed:', err);
                 return false;
             } finally {
                 clearTimeout(timeoutId);
@@ -953,16 +959,11 @@
             submitButton.textContent = 'Checking connection...';
 
             try {
-                // Check server connection first
-                const isConnected = await checkServerConnection();
-                if (!isConnected) {
-                    let errorMessage = 'Unable to connect to the server. ';
-                    if (!navigator.onLine) {
-                        errorMessage += 'You appear to be offline. Please check your internet connection.';
-                    } else {
-                        errorMessage += 'The server may be temporarily unavailable. Please try again in a few moments.';
+                if (!window.API_BASE_URL) {
+                    const isConnected = await checkServerConnection();
+                    if (!isConnected) {
+                        throw new Error('Unable to establish server connection. Please try again later.');
                     }
-                    throw new Error(errorMessage);
                 }
 
                 if (!selectedTable) {
@@ -973,22 +974,18 @@
                 const formData = new FormData(this);
                 const data = Object.fromEntries(formData.entries());
 
-                const RENDER_API_URL = 'https://bella-cucina.onrender.com/api/reservations';
-                
-                // Submit reservation with increased timeout
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 15000); // Increased to 15 second timeout
+                const timeoutId = setTimeout(() => controller.abort(), 15000);
 
                 try {
-                    const response = await fetch(RENDER_API_URL, {
+                    const response = await fetch(`${window.API_BASE_URL}/reservations`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify(data),
                         signal: controller.signal,
-                        mode: 'cors',
-                        credentials: 'same-origin'
+                        credentials: 'include'
                     });
 
                     if (!response.ok) {
@@ -1027,36 +1024,76 @@
             }
         };
 
-        // Enhanced online/offline status handling with reconnection attempts
-        let reconnectionAttempt = 0;
-        const maxReconnectionAttempts = 3;
+        // Improved connection status monitoring
+        let connectionMonitorInterval;
+        let failedChecks = 0;
+        const MAX_FAILED_CHECKS = 3;
 
-        window.addEventListener('online', async () => {
-            console.log('Browser reports online status');
-            if (await checkServerConnection()) {
-                showMessage('Internet connection restored', 'success');
-                reconnectionAttempt = 0;
-            } else if (reconnectionAttempt < maxReconnectionAttempts) {
-                reconnectionAttempt++;
-                showMessage('Attempting to reconnect to server...', 'error');
-                setTimeout(async () => {
-                    if (await checkServerConnection()) {
-                        showMessage('Connection restored', 'success');
-                        reconnectionAttempt = 0;
-                    }
-                }, 2000 * Math.pow(2, reconnectionAttempt));
+        async function monitorConnection() {
+            const isConnected = await checkServerConnection(1); // Quick check with 1 retry
+            if (!isConnected) {
+                failedChecks++;
+                if (failedChecks === 1) {
+                    showMessage('Warning: Connection to server is unstable', 'error');
+                } else if (failedChecks >= MAX_FAILED_CHECKS) {
+                    showMessage('Connection lost. Attempting to reconnect...', 'error');
+                    clearInterval(connectionMonitorInterval);
+                    await attemptReconnection();
+                }
+            } else {
+                if (failedChecks > 0) {
+                    showMessage('Connection restored', 'success');
+                }
+                failedChecks = 0;
             }
-        });
+        }
 
-        window.addEventListener('offline', () => {
-            console.log('Browser reports offline status');
-            showMessage('Internet connection lost', 'error');
-        });
+        async function attemptReconnection() {
+            let reconnectionAttempt = 0;
+            const maxReconnectionAttempts = 5;
 
-        // Initial connection check
+            while (reconnectionAttempt < maxReconnectionAttempts) {
+                await new Promise(resolve => setTimeout(resolve, Math.min(1000 * Math.pow(2, reconnectionAttempt), 30000)));
+                
+                if (await checkServerConnection()) {
+                    showMessage('Successfully reconnected to server', 'success');
+                    startConnectionMonitoring();
+                    return true;
+                }
+                reconnectionAttempt++;
+            }
+            
+            showMessage('Unable to reconnect to server. Please refresh the page or try again later.', 'error');
+            return false;
+        }
+
+        function startConnectionMonitoring() {
+            if (connectionMonitorInterval) {
+                clearInterval(connectionMonitorInterval);
+            }
+            connectionMonitorInterval = setInterval(monitorConnection, 30000); // Check every 30 seconds
+        }
+
+        // Initialize connection monitoring
         checkServerConnection().then(isConnected => {
             if (!isConnected) {
                 showMessage('Warning: Unable to connect to server. Some features may be unavailable.', 'error');
+                attemptReconnection();
+            } else {
+                startConnectionMonitoring();
+            }
+        });
+
+        // Handle page visibility changes
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                checkServerConnection().then(isConnected => {
+                    if (isConnected) {
+                        startConnectionMonitoring();
+                    }
+                });
+            } else {
+                clearInterval(connectionMonitorInterval);
             }
         });
     </script>
