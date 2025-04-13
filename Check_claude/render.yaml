@@ -11,6 +11,20 @@ services:
         value: postgresql://schema_uez0_user:BVwbEKyvGYwKht8lJj0kncVbpTDA154p@dpg-cvslha6uk2gs73bpfohg-a/schema_uez0
       - key: PORT
         value: 3000
+      - key: DB_MAX_CONNECTIONS
+        value: 20
+      - key: DB_IDLE_TIMEOUT_MS
+        value: 30000
+      - key: DB_CONNECTION_TIMEOUT_MS
+        value: 5000
+      - key: CORS_ORIGIN
+        value: https://bella-cucina.onrender.com
+    healthCheckPath: /api/health
+    numInstances: 1
+    scaling:
+      minInstances: 1
+      maxInstances: 1
+    size: free
 
 databases:
   - name: bella-cucina-db
