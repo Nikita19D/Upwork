@@ -527,6 +527,33 @@
             from { transform: translateX(100%); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
         }
+
+        .connection-status {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 15px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 1000;
+            display: none;
+        }
+
+        .connection-status.connected {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .connection-status.disconnected {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .connection-status.reconnecting {
+            background-color: #ff9800;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -767,6 +794,8 @@
         </div>
     </footer>
 
+    <div id="connectionStatus" class="connection-status"></div>
+
     <script>
         let selectedTable = null;
 
@@ -883,56 +912,74 @@
             }, 5000);
         }
 
+        function updateConnectionStatus(status, message) {
+            const statusElement = document.getElementById('connectionStatus');
+            statusElement.style.display = 'block';
+            statusElement.className = `connection-status ${status}`;
+            statusElement.textContent = message;
+
+            if (status === 'connected') {
+                setTimeout(() => {
+                    statusElement.style.display = 'none';
+                }, 3000);
+            }
+        }
+
         async function checkServerConnection(retries = 3) {
-            const API_URL = window.location.hostname === 'localhost' 
-                ? 'http://localhost:3000/api' 
-                : 'https://bellacucina-g0b9.onrender.com/api';
-            
+            const API_BASE_URL = window.location.hostname === 'localhost' 
+                ? 'http://localhost:3000' 
+                : window.location.origin;
             const timeout = 15000;
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+            updateConnectionStatus('reconnecting', 'Checking server connection...');
 
             try {
-                if (!navigator.onLine) {
-                    console.log('Browser is offline');
-                    return false;
-                }
-
                 for (let i = 0; i < retries; i++) {
                     try {
-                        console.log(`Connection attempt ${i + 1} to ${API_URL}/health`);
-                        const response = await fetch(`${API_URL}/health`, {
-                            signal: controller.signal,
+                        console.log(`Attempting connection to ${API_BASE_URL}/api/health (attempt ${i + 1}/${retries})`);
+                        const response = await fetch(`${API_BASE_URL}/api/health`, {
                             headers: {
                                 'Cache-Control': 'no-cache',
-                                'Pragma': 'no-cache'
+                                'Pragma': 'no-cache',
+                                'Accept': 'application/json'
                             },
                             mode: 'cors',
                             credentials: 'include'
                         });
 
                         if (!response.ok) {
-                            throw new Error(`HTTP error! status: ${response.status}`);
+                            const errorText = await response.text();
+                            console.warn(`Server returned status: ${response.status}, Error: ${errorText}`);
+                            throw new Error(`Server returned ${response.status}: ${errorText}`);
                         }
 
                         const data = await response.json();
-                        console.log('Health check response:', data);
+                        console.log('Server health check response:', data);
                         
-                        if (data.status === 'healthy' && data.database === 'connected') {
-                            window.API_BASE_URL = API_URL;
+                        if (data.status === 'healthy') {
+                            window.API_BASE_URL = API_BASE_URL;
+                            console.log('Successfully connected to server at:', API_BASE_URL);
+                            updateConnectionStatus('connected', 'Connected to server');
                             return true;
+                        } else {
+                            throw new Error(data.message || 'Server reported unhealthy status');
                         }
                     } catch (err) {
                         console.warn(`Connection attempt ${i + 1} failed:`, err);
                         if (i < retries - 1) {
                             const delay = Math.min(1000 * Math.pow(2, i), 10000);
+                            updateConnectionStatus('reconnecting', `Reconnecting in ${Math.round(delay/1000)}s...`);
                             await new Promise(resolve => setTimeout(resolve, delay));
+                        } else {
+                            updateConnectionStatus('disconnected', 'Unable to connect to server');
                         }
                     }
                 }
                 return false;
-            } finally {
-                clearTimeout(timeoutId);
+            } catch (err) {
+                console.error('Connection check failed:', err);
+                updateConnectionStatus('disconnected', 'Connection failed');
+                return false;
             }
         }
 
@@ -963,7 +1010,7 @@
                 const timeoutId = setTimeout(() => controller.abort(), 15000);
 
                 try {
-                    const response = await fetch(`${window.API_BASE_URL}/reservations`, {
+                    const response = await fetch(`${window.API_BASE_URL}/api/reservations`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -986,6 +1033,7 @@
                         selectedTable = null;
                         document.querySelector('.table.selected')?.classList.remove('selected');
                         document.getElementById('selectedTable').value = '';
+                        updateConnectionStatus('connected', 'Reservation submitted successfully');
                     } else {
                         throw new Error(result.message || 'Failed to submit reservation');
                     }
@@ -1000,6 +1048,7 @@
                     errorMessage = 'The request timed out. Please try again.';
                 } else if (!navigator.onLine) {
                     errorMessage = 'You appear to be offline. Please check your internet connection.';
+                    updateConnectionStatus('disconnected', 'No internet connection');
                 }
                 
                 showMessage(errorMessage, 'error');
