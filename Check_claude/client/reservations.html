@@ -884,67 +884,52 @@
         }
 
         async function checkServerConnection(retries = 3) {
-            const API_URL = 'http://localhost:3000/api';
-            const RENDER_API_URL = 'https://bellacucina-g0b9.onrender.com/api';
-            const timeout = 10000;
-
+            const API_URL = window.location.hostname === 'localhost' 
+                ? 'http://localhost:3000/api' 
+                : 'https://bellacucina-g0b9.onrender.com/api';
+            
+            const timeout = 15000;
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), timeout);
 
             try {
                 if (!navigator.onLine) {
+                    console.log('Browser is offline');
                     return false;
                 }
 
                 for (let i = 0; i < retries; i++) {
                     try {
-                        const urls = [RENDER_API_URL];
-                        if (process.env.NODE_ENV !== 'production') {
-                            urls.unshift(API_URL);
+                        console.log(`Connection attempt ${i + 1} to ${API_URL}/health`);
+                        const response = await fetch(`${API_URL}/health`, {
+                            signal: controller.signal,
+                            headers: {
+                                'Cache-Control': 'no-cache',
+                                'Pragma': 'no-cache'
+                            },
+                            mode: 'cors',
+                            credentials: 'include'
+                        });
+
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
                         }
 
-                        for (const baseUrl of urls) {
-                            try {
-                                console.log(`Attempting connection to ${baseUrl}`);
-                                const response = await fetch(`${baseUrl}/health`, {
-                                    signal: controller.signal,
-                                    headers: {
-                                        'Cache-Control': 'no-cache',
-                                        'Pragma': 'no-cache'
-                                    },
-                                    mode: 'cors',
-                                    credentials: 'include'
-                                });
-
-                                if (!response.ok) {
-                                    console.warn(`Server returned ${response.status} for ${baseUrl}`);
-                                    continue;
-                                }
-
-                                const health = await response.json();
-                                if (health.status === 'healthy' && health.database === 'connected') {
-                                    console.log('Successfully connected to:', baseUrl);
-                                    window.API_BASE_URL = baseUrl;
-                                    return true;
-                                }
-                            } catch (urlError) {
-                                console.warn(`Failed to connect to ${baseUrl}:`, urlError);
-                            }
-                        }
-
-                        if (i < retries - 1) {
-                            const delay = Math.min(1000 * Math.pow(2, i), 10000);
-                            console.log(`Retrying in ${delay}ms...`);
-                            await new Promise(resolve => setTimeout(resolve, delay));
+                        const data = await response.json();
+                        console.log('Health check response:', data);
+                        
+                        if (data.status === 'healthy' && data.database === 'connected') {
+                            window.API_BASE_URL = API_URL;
+                            return true;
                         }
                     } catch (err) {
-                        console.error(`Attempt ${i + 1} failed:`, err);
-                        if (i === retries - 1) throw err;
+                        console.warn(`Connection attempt ${i + 1} failed:`, err);
+                        if (i < retries - 1) {
+                            const delay = Math.min(1000 * Math.pow(2, i), 10000);
+                            await new Promise(resolve => setTimeout(resolve, delay));
+                        }
                     }
                 }
-                return false;
-            } catch (err) {
-                console.error('Connection check failed:', err);
                 return false;
             } finally {
                 clearTimeout(timeoutId);

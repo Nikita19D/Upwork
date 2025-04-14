@@ -16,6 +16,9 @@ services:
           property: connectionString
       - key: PORT
         value: 3000
+      - key: BASE_URL
+        value: https://bellacucina-g0b9.onrender.com
+    autoDeploy: true
     disk:
       name: tmp
       mountPath: /tmp
@@ -25,4 +28,4 @@ databases:
   - name: bella-cucina-db
     databaseName: schema_uez0
     plan: free
-    ipAllowList: []
+    ipAllowList: [] # Allow all connections
