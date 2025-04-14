@@ -430,6 +430,11 @@ app.post('/api/reservations', async (req, res) => {
             throw new Error('Missing required fields');
         }
 
+        // Split full name into first and last name
+        const nameParts = name.trim().split(/\s+/);
+        const firstName = nameParts[0];
+        const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : 'Unknown';
+
         const tableNumber = parseInt(table.replace('Table ', ''));
         if (isNaN(tableNumber)) {
             throw new Error('Invalid table number format');
@@ -456,13 +461,16 @@ app.post('/api/reservations', async (req, res) => {
             throw new Error('This table is already booked for the selected time');
         }
 
-        // Insert or update customer
+        // Insert or update customer with both first and last name
         const customerResult = await client.query(
-            `INSERT INTO customers (first_name, email, phone)
-             VALUES ($1, $2, $3)
-             ON CONFLICT (email) DO UPDATE SET phone = $3
+            `INSERT INTO customers (first_name, last_name, email, phone)
+             VALUES ($1, $2, $3, $4)
+             ON CONFLICT (email) DO UPDATE 
+             SET phone = $4,
+                 first_name = $1,
+                 last_name = $2
              RETURNING customer_id`,
-            [name, email, phone]
+            [firstName, lastName, email, phone]
         );
         const customerId = customerResult.rows[0].customer_id;
 
