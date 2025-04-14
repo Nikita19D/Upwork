@@ -1130,6 +1130,50 @@
                 clearInterval(connectionMonitorInterval);
             }
         });
+
+        // Network state monitoring
+        window.addEventListener('online', () => {
+            updateConnectionStatus('reconnecting', 'Network connection restored. Checking server...');
+            checkServerConnection().then(isConnected => {
+                if (isConnected) {
+                    startConnectionMonitoring();
+                }
+            });
+        });
+
+        window.addEventListener('offline', () => {
+            clearInterval(connectionMonitorInterval);
+            updateConnectionStatus('disconnected', 'No internet connection');
+            showMessage('You are currently offline. Some features may be unavailable.', 'error');
+        });
+
+        // Initial network check
+        if (!navigator.onLine) {
+            updateConnectionStatus('disconnected', 'No internet connection');
+        }
+
+        // Handle connection timeouts better
+        const originalFetch = window.fetch;
+        window.fetch = async function(...args) {
+            const [resource, config] = args;
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 15000);
+                
+                const response = await originalFetch(resource, {
+                    ...config,
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
+                return response;
+            } catch (error) {
+                if (error.name === 'AbortError') {
+                    throw new Error('Request timed out. Please try again.');
+                }
+                throw error;
+            }
+        };
     </script>
 </body>
 </html>

@@ -1,11 +1,8 @@
--- Move existing database.sql content here
--- ...existing database schema code...
--- Create database
-CREATE DATABASE bella_cucina;
-\c bella_cucina;
+-- Initialize schema for Bella Cucina restaurant management system
+-- Tables and schema for the restaurant reservation system
 
 -- Create tables table
-CREATE TABLE tables (
+CREATE TABLE IF NOT EXISTS tables (
     table_id SERIAL PRIMARY KEY,
     table_number INTEGER NOT NULL UNIQUE,
     capacity INTEGER NOT NULL,
