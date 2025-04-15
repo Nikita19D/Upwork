@@ -595,24 +595,50 @@ app.post('/api/reservations', async (req, res) => {
     }
 });
 
-// Add contact form endpoint
+// Add contact form endpoint with improved error handling
 app.post('/api/contact', async (req, res) => {
     try {
         const { name, email, phone, subject, message } = req.body;
         
-        if (!name || !email || !message) {
+        // Enhanced validation
+        if (!name || typeof name !== 'string' || name.trim().length < 2) {
             return res.status(400).json({ 
                 success: false, 
-                message: 'Name, email and message are required' 
+                message: 'Please enter a valid name (minimum 2 characters)' 
             });
         }
 
-        // Send email
-        await transporter.sendMail({
-            from: process.env.EMAIL_USER,
-            to: 'info@bellacucina.com', // Restaurant's email
-            subject: `New Contact Form Message: ${subject || 'General Inquiry'}`,
-            text: `
+        if (!email || !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Please enter a valid email address' 
+            });
+        }
+
+        if (!message || typeof message !== 'string' || message.trim().length < 10) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Please enter a message (minimum 10 characters)' 
+            });
+        }
+
+        // Verify email configuration
+        if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+            console.error('Email configuration missing');
+            return res.status(500).json({ 
+                success: false, 
+                message: 'Server email configuration error. Please try again later.' 
+            });
+        }
+
+        try {
+            // Send email with timeout
+            await Promise.race([
+                transporter.sendMail({
+                    from: process.env.EMAIL_USER,
+                    to: 'info@bellacucina.com',
+                    subject: `New Contact Form Message: ${subject || 'General Inquiry'}`,
+                    text: `
 Name: ${name}
 Email: ${email}
 Phone: ${phone || 'Not provided'}
@@ -620,19 +646,27 @@ Subject: ${subject || 'General Inquiry'}
 
 Message:
 ${message}
-            `,
-            replyTo: email
-        });
-        
-        res.json({ 
-            success: true,
-            message: 'Thank you for your message. We will get back to you soon!'
-        });
+                    `,
+                    replyTo: email
+                }),
+                new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error('Email sending timed out')), 30000)
+                )
+            ]);
+            
+            res.json({ 
+                success: true,
+                message: 'Thank you for your message. We will get back to you soon!'
+            });
+        } catch (emailError) {
+            console.error('Email sending error:', emailError);
+            throw new Error('Failed to send email. Please try again later.');
+        }
     } catch (error) {
         console.error('Contact form error:', error);
         res.status(500).json({ 
             success: false,
-            message: 'Error sending message. Please try again later.'
+            message: error.message || 'Error sending message. Please try again later.'
         });
     }
 });
