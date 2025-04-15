@@ -160,24 +160,58 @@
             .menu-nav {
                 top: 0;
                 margin-top: 0;
-                padding: 10px 0;
+                padding: 0;
+                background-color: #f0e6d2;
+                position: sticky;
             }
 
             .menu-nav .container {
                 padding: 0;
+                position: relative;
+            }
+
+            .menu-nav ul {
+                display: flex;
+                padding: 0;
+                margin: 0;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scroll-snap-type: x mandatory;
+                scroll-behavior: smooth;
             }
 
             .menu-nav ul li {
-                margin: 0 12px;
                 flex: 0 0 auto;
+                margin: 0;
+                scroll-snap-align: start;
             }
 
-            .menu-nav ul li:first-child {
-                margin-left: 12px;
+            .menu-nav ul li a {
+                display: block;
+                padding: 15px 20px;
+                font-size: 14px;
+                white-space: nowrap;
+                position: relative;
             }
 
-            .menu-nav ul li:last-child {
-                margin-right: 12px;
+            .menu-nav ul li a::after {
+                display: none;
+            }
+
+            .menu-nav ul li a.active {
+                background-color: #8b0000;
+                color: #fff;
+            }
+
+            .menu-nav::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                right: 0;
+                height: 100%;
+                width: 30px;
+                background: linear-gradient(to right, transparent, #f0e6d2);
+                pointer-events: none;
             }
         }
         
