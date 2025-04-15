@@ -3,6 +3,7 @@ const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
 const path = require('path');
+const nodemailer = require('nodemailer');
 
 const app = express();
 
@@ -28,6 +29,15 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../client')));
+
+// Configure email transporter
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+    }
+});
 
 // Database configuration for Render
 const pool = new Pool({
@@ -582,6 +592,48 @@ app.post('/api/reservations', async (req, res) => {
         });
     } finally {
         client?.release();
+    }
+});
+
+// Add contact form endpoint
+app.post('/api/contact', async (req, res) => {
+    try {
+        const { name, email, phone, subject, message } = req.body;
+        
+        if (!name || !email || !message) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Name, email and message are required' 
+            });
+        }
+
+        // Send email
+        await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: 'info@bellacucina.com', // Restaurant's email
+            subject: `New Contact Form Message: ${subject || 'General Inquiry'}`,
+            text: `
+Name: ${name}
+Email: ${email}
+Phone: ${phone || 'Not provided'}
+Subject: ${subject || 'General Inquiry'}
+
+Message:
+${message}
+            `,
+            replyTo: email
+        });
+        
+        res.json({ 
+            success: true,
+            message: 'Thank you for your message. We will get back to you soon!'
+        });
+    } catch (error) {
+        console.error('Contact form error:', error);
+        res.status(500).json({ 
+            success: false,
+            message: 'Error sending message. Please try again later.'
+        });
     }
 });
 
