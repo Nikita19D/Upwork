@@ -72,6 +72,61 @@
             color: #f8e9a1;
         }
         
+        /* Menu navigation */
+        .menu-nav {
+            background-color: #f0e6d2;
+            padding: 15px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 78px;
+            z-index: 99;
+        }
+        
+        .menu-nav .container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .menu-nav .container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .menu-nav ul {
+            display: inline-flex;
+            justify-content: start;
+            list-style: none;
+            padding: 0 10px;
+            margin: 0;
+            min-width: min-content;
+        }
+
+        @media (max-width: 768px) {
+            .menu-nav {
+                top: 0;
+                margin-top: 0;
+                padding: 10px 0;
+            }
+
+            .menu-nav .container {
+                padding: 0;
+            }
+
+            .menu-nav ul li {
+                margin: 0 12px;
+                flex: 0 0 auto;
+            }
+
+            .menu-nav ul li:first-child {
+                margin-left: 12px;
+            }
+
+            .menu-nav ul li:last-child {
+                margin-right: 12px;
+            }
+        }
+
         /* Page header */
         .page-header {
             background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/api/placeholder/1200/300');
@@ -572,6 +627,18 @@
             </nav>
         </div>
     </header>
+
+    <!-- Menu Navigation -->
+    <div class="menu-nav">
+        <div class="container">
+            <ul>
+                <li><a href="#appetizers">Appetizers</a></li>
+                <li><a href="#main-courses">Main Courses</a></li>
+                <li><a href="#desserts">Desserts</a></li>
+                <li><a href="#beverages">Beverages</a></li>
+            </ul>
+        </div>
+    </div>
 
     <!-- Page Header -->
     <section class="page-header">

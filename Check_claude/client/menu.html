@@ -114,8 +114,9 @@
         
         .menu-nav ul {
             display: inline-flex;
+            justify-content: start;
             list-style: none;
-            padding: 0;
+            padding: 0 10px;
             margin: 0;
             min-width: min-content;
         }
@@ -157,13 +158,26 @@
         
         @media (max-width: 768px) {
             .menu-nav {
-                padding: 10px 0;
                 top: 0;
+                margin-top: 0;
+                padding: 10px 0;
             }
 
-            .menu-nav ul {
-                justify-content: flex-start;
-                padding: 0 10px;
+            .menu-nav .container {
+                padding: 0;
+            }
+
+            .menu-nav ul li {
+                margin: 0 12px;
+                flex: 0 0 auto;
+            }
+
+            .menu-nav ul li:first-child {
+                margin-left: 12px;
+            }
+
+            .menu-nav ul li:last-child {
+                margin-right: 12px;
             }
         }
         
