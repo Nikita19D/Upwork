@@ -18,6 +18,10 @@ services:
         value: 3000
       - key: BASE_URL
         value: https://bellacucina-g0b9.onrender.com
+      - key: EMAIL_USER
+        sync: false # Indicates this is a secret value
+      - key: EMAIL_PASS
+        sync: false # Indicates this is a secret value
     autoDeploy: true
     disk:
       name: tmp
