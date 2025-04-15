@@ -404,6 +404,63 @@ app.get('/api/health', async (req, res) => {
     }
 });
 
+// Add database check endpoint with basic auth
+app.get('/api/debug/db-check', async (req, res) => {
+    // Basic auth check
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+        res.setHeader('WWW-Authenticate', 'Basic');
+        return res.status(401).json({ error: 'Authentication required' });
+    }
+
+    try {
+        const credentials = Buffer.from(authHeader.split(' ')[1], 'base64').toString().split(':');
+        const username = credentials[0];
+        const password = credentials[1];
+
+        // Simple check - you should use environment variables for these values
+        if (username !== 'admin' || password !== 'bellacucina2025') {
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+
+        const client = await pool.connect();
+        try {
+            // Get table information
+            const tables = await client.query(`
+                SELECT table_name 
+                FROM information_schema.tables 
+                WHERE table_schema = 'public'
+            `);
+
+            const dbState = {};
+            
+            // Get row counts for each table
+            for (const { table_name } of tables.rows) {
+                const countResult = await client.query(`SELECT COUNT(*) FROM ${table_name}`);
+                dbState[table_name] = {
+                    count: parseInt(countResult.rows[0].count),
+                    rows: []
+                };
+
+                // Get actual data
+                const dataResult = await client.query(`SELECT * FROM ${table_name}`);
+                dbState[table_name].rows = dataResult.rows;
+            }
+
+            res.json({
+                timestamp: new Date().toISOString(),
+                tables: tables.rows.map(r => r.table_name),
+                state: dbState
+            });
+        } finally {
+            client.release();
+        }
+    } catch (err) {
+        console.error('Database check failed:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // Add table availability check function
 async function checkTableAvailability(client, tableNumber, date, time) {
     const result = await client.query(
