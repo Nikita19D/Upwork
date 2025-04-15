@@ -158,60 +158,42 @@
         
         @media (max-width: 768px) {
             .menu-nav {
+                position: fixed;
                 top: 0;
-                margin-top: 0;
-                padding: 0;
-                background-color: #f0e6d2;
-                position: sticky;
+                right: -250px;
+                width: 250px;
+                height: 100vh;
+                background-color: #8b0000;
+                padding: 80px 20px 20px;
+                transition: right 0.3s ease-in-out;
+                z-index: 99;
             }
 
-            .menu-nav .container {
-                padding: 0;
-                position: relative;
+            .menu-nav.active {
+                right: 0;
             }
 
             .menu-nav ul {
-                display: flex;
-                padding: 0;
+                flex-direction: column;
                 margin: 0;
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-                scroll-snap-type: x mandatory;
-                scroll-behavior: smooth;
             }
 
             .menu-nav ul li {
-                flex: 0 0 auto;
-                margin: 0;
-                scroll-snap-align: start;
+                margin: 10px 0;
             }
 
             .menu-nav ul li a {
-                display: block;
-                padding: 15px 20px;
-                font-size: 14px;
-                white-space: nowrap;
-                position: relative;
+                color: #fff;
+                font-size: 18px;
+                padding: 10px 0;
+            }
+
+            .menu-nav ul li a:hover {
+                color: #f8e9a1;
             }
 
             .menu-nav ul li a::after {
                 display: none;
-            }
-
-            .menu-nav ul li a.active {
-                background-color: #8b0000;
-                color: #fff;
-            }
-
-            .menu-nav::after {
-                content: '';
-                position: absolute;
-                top: 0;
-                right: 0;
-                height: 100%;
-                width: 30px;
-                background: linear-gradient(to right, transparent, #f0e6d2);
-                pointer-events: none;
             }
         }
         
@@ -512,6 +494,22 @@
             z-index: 99;
         }
 
+        /* Menu Categories Button */
+        .categories-toggle {
+            display: none;
+            background-color: #8b0000;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            z-index: 1000;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
         @media (max-width: 768px) {
             .menu-toggle {
                 display: block;
@@ -543,6 +541,10 @@
             }
 
             .overlay.active {
+                display: block;
+            }
+
+            .categories-toggle {
                 display: block;
             }
         }
@@ -579,6 +581,7 @@
     </section>
 
     <!-- Menu Navigation -->
+    <button class="categories-toggle">Menu Categories</button>
     <nav class="menu-nav">
         <div class="container">
             <ul>
@@ -1023,17 +1026,34 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const menuToggle = document.querySelector('.menu-toggle');
-            const nav = document.querySelector('nav');
+            const mainNav = document.querySelector('header nav');
             const overlay = document.querySelector('.overlay');
+            const categoriesToggle = document.querySelector('.categories-toggle');
+            const menuNav = document.querySelector('.menu-nav');
 
             menuToggle.addEventListener('click', function() {
-                nav.classList.toggle('active');
+                mainNav.classList.toggle('active');
+                overlay.classList.toggle('active');
+            });
+
+            categoriesToggle.addEventListener('click', function() {
+                menuNav.classList.toggle('active');
                 overlay.classList.toggle('active');
             });
 
             overlay.addEventListener('click', function() {
-                nav.classList.remove('active');
+                mainNav.classList.remove('active');
+                menuNav.classList.remove('active');
                 overlay.classList.remove('active');
+            });
+
+            // Close menus when clicking menu items
+            const menuLinks = document.querySelectorAll('.menu-nav a');
+            menuLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    menuNav.classList.remove('active');
+                    overlay.classList.remove('active');
+                });
             });
         });
     </script>
