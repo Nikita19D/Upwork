@@ -30,12 +30,21 @@ app.use(cors({
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../client')));
 
-// Configure email transporter
+// Configure email transporter with enhanced error handling and logging
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'gusarenkonikita1@gmail.com', // Replace with your actual Gmail address
-        pass: 'cmgi ybsj vxjm lmwx'  // App password
+        user: 'gusarenkonikita1@gmail.com',
+        pass: 'cmgi ybsj vxjm lmwx'
+    }
+});
+
+// Verify email configuration on startup
+transporter.verify((error, success) => {
+    if (error) {
+        console.error('Email configuration error:', error);
+    } else {
+        console.log('Email server is ready to send messages');
     }
 });
 
@@ -622,21 +631,12 @@ app.post('/api/contact', async (req, res) => {
             });
         }
 
-        // Verify email configuration
-        if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-            console.error('Email configuration missing');
-            return res.status(500).json({ 
-                success: false, 
-                message: 'Server email configuration error. Please try again later.' 
-            });
-        }
-
         try {
-            // Send email with timeout
+            // Send email with timeout and detailed error logging
             await Promise.race([
                 transporter.sendMail({
-                    from: process.env.EMAIL_USER,
-                    to: 'info@bellacucina.com',
+                    from: 'gusarenkonikita1@gmail.com', // Use the same email as auth.user
+                    to: 'gusarenkonikita1@gmail.com',   // Send to yourself for testing
                     subject: `New Contact Form Message: ${subject || 'General Inquiry'}`,
                     text: `
 Name: ${name}
@@ -648,12 +648,22 @@ Message:
 ${message}
                     `,
                     replyTo: email
+                }).catch(error => {
+                    console.error('Detailed email error:', {
+                        code: error.code,
+                        command: error.command,
+                        response: error.response,
+                        responseCode: error.responseCode,
+                        stack: error.stack
+                    });
+                    throw error;
                 }),
                 new Promise((_, reject) => 
                     setTimeout(() => reject(new Error('Email sending timed out')), 30000)
                 )
             ]);
             
+            console.log('Email sent successfully to:', email);
             res.json({ 
                 success: true,
                 message: 'Thank you for your message. We will get back to you soon!'
