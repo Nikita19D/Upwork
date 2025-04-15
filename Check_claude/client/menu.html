@@ -101,15 +101,29 @@
             z-index: 99;
         }
         
+        .menu-nav .container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+        }
+
+        .menu-nav .container::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+        }
+        
         .menu-nav ul {
-            display: flex;
-            justify-content: center;
+            display: inline-flex;
             list-style: none;
-            flex-wrap: wrap;
+            padding: 0;
+            margin: 0;
+            min-width: min-content;
         }
         
         .menu-nav ul li {
             margin: 5px 15px;
+            flex: 0 0 auto;
+            white-space: nowrap;
         }
         
         .menu-nav ul li a {
@@ -139,6 +153,18 @@
         
         .menu-nav ul li a:hover {
             color: #6b0000;
+        }
+        
+        @media (max-width: 768px) {
+            .menu-nav {
+                padding: 10px 0;
+                top: 0;
+            }
+
+            .menu-nav ul {
+                justify-content: flex-start;
+                padding: 0 10px;
+            }
         }
         
         /* Menu sections */
