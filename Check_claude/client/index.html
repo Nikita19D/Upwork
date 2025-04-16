@@ -75,8 +75,6 @@
             font-style: italic;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s ease;
-            will-change: transform, color;
-            backface-visibility: hidden;
         }
         
         .logo span {
@@ -105,8 +103,6 @@
             text-decoration: none;
             font-size: 18px;
             transition: color 0.3s;
-            will-change: transform, color;
-            backface-visibility: hidden;
         }
         
         nav ul li a:hover {
@@ -127,10 +123,7 @@
 
         /* Hero section */
         .hero {
-            background-image: image-set(
-                url('https://images.unsplash.com/photo-1514933651103-005eec06c04b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60') 1x,
-                url('https://images.unsplash.com/photo-1514933651103-005eec06c04b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80') 2x
-            );
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1514933651103-005eec06c04b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');
             background-size: cover;
             background-position: center;
             height: 600px;
@@ -139,13 +132,10 @@
             justify-content: center;
             text-align: center;
             color: #fff;
-            min-height: 400px;
-            contain: layout paint;
         }
         
         .hero-content {
             max-width: 800px;
-            contain-intrinsic-size: 0 300px;
         }
         
         .hero h1 {
@@ -173,8 +163,6 @@
             text-decoration: none;
             box-shadow: 0 4px 15px rgba(139, 0, 0, 0.2);
             transform: translateY(0);
-            will-change: transform, color;
-            backface-visibility: hidden;
         }
         
         .btn:hover {
@@ -193,9 +181,6 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 30px;
-            contain: layout style;
-            content-visibility: auto;
-            contain-intrinsic-size: 0 500px;
         }
         
         .feature {
@@ -211,11 +196,6 @@
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            contain: layout style paint;
-            will-change: transform;
-            transform: translateZ(0);
-            backface-visibility: hidden;
-            contain-intrinsic-size: 0 300px;
         }
         
         .feature:hover {
@@ -273,15 +253,11 @@
         
         .feature-image-wrapper img {
             width: 100%;
-            height: auto;
+            height: 100%;
             object-fit: cover;
             border-radius: 50%;
             transition: transform 0.5s ease;
             transform: scale(1.01);
-            contain: paint;
-            will-change: transform;
-            loading: lazy;
-            decoding: async;
         }
         
         .feature:hover .feature-image-wrapper img {
@@ -326,9 +302,6 @@
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 30px;
-            contain: layout style;
-            content-visibility: auto;
-            contain-intrinsic-size: 0 500px;
         }
         
         .menu-item {
@@ -341,11 +314,6 @@
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            contain: layout style paint;
-            will-change: transform;
-            transform: translateZ(0);
-            backface-visibility: hidden;
-            contain-intrinsic-size: 0 300px;
         }
         
         .menu-item:hover {
@@ -357,10 +325,6 @@
             width: 40%;
             background-size: cover;
             background-position: center;
-            contain: paint;
-            will-change: transform;
-            loading: lazy;
-            decoding: async;
         }
         
         .menu-item-content {
@@ -391,9 +355,6 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 30px;
-            contain: layout style;
-            content-visibility: auto;
-            contain-intrinsic-size: 0 500px;
         }
         
         .testimonial {
@@ -407,11 +368,6 @@
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            contain: layout style paint;
-            will-change: transform;
-            transform: translateZ(0);
-            backface-visibility: hidden;
-            contain-intrinsic-size: 0 300px;
         }
         
         .testimonial:hover {
@@ -590,23 +546,7 @@
             }
             
             .feature:hover, .menu-item:hover, .testimonial:hover {
-                transform: none;
-                transition: none;
-            }
-
-            .feature-image-wrapper::before,
-            .menu-item::before,
-            .testimonial::before {
-                display: none;
-            }
-
-            .container {
-                animation: none;
-            }
-
-            .hero h1,
-            .hero p {
-                transform: none !important;
+                transform: translateY(-5px) scale(1.01);
             }
         }
 
@@ -653,50 +593,6 @@
         html {
             scroll-behavior: smooth;
             scroll-padding-top: 80px;
-        }
-
-        /* Performance optimizations */
-        img {
-            width: 100%;
-            height: auto;
-            aspect-ratio: attr(width) / attr(height);
-            contain: paint;
-            will-change: transform;
-        }
-
-        .feature-image-wrapper img,
-        .menu-item-img img {
-            loading: lazy;
-            decoding: async;
-        }
-
-        .feature, 
-        .menu-item,
-        .testimonial {
-            contain: layout style paint;
-            will-change: transform;
-            transform: translateZ(0);
-            backface-visibility: hidden;
-        }
-
-        @media (prefers-reduced-motion: no-preference) {
-            .fade-in {
-                opacity: 0;
-                transform: translateY(20px);
-                transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-            }
-
-            .fade-in.visible {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            * {
-                animation: none !important;
-                transition: none !important;
-            }
         }
     </style>
 </head>
