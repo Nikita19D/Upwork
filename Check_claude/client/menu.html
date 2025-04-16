@@ -160,7 +160,7 @@
             .menu-nav {
                 position: fixed;
                 top: 0;
-                right: -280px;
+                right: -280px;  /* Match the width to ensure it's fully hidden */
                 width: 280px;
                 height: 100vh;
                 background-color: #8b0000;
@@ -168,10 +168,12 @@
                 transition: all 0.3s ease-in-out;
                 z-index: 1003;
                 overflow-y: auto;
+                transform: translateX(100%); /* Move it completely off-screen */
             }
 
             .menu-nav.active {
                 right: 0;
+                transform: translateX(0); /* Bring it back on screen */
             }
 
             .menu-nav ul {
@@ -846,7 +848,7 @@
                 </div>
                 
                 <div class="menu-item">
-                    <div class="menu-item-img" style="background-image: url('https://images.unsplash.com/photo-1583394293214-28ded15ee548?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="menu-item-img" style="background-image: url('https://images.unsplash.com/photo-1515669097368-22e68427d265?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
                     <div class="menu-item-content">
                         <div class="menu-item-header">
                             <h3>Saltimbocca alla Romana</h3>
