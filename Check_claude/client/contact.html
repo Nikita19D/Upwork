@@ -74,20 +74,47 @@
         
         /* Page header */
         .page-header {
-            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/api/placeholder/1200/300');
+            background-image: linear-gradient(rgba(139, 0, 0, 0.8), rgba(0, 0, 0, 0.7)), url('/api/placeholder/1200/300');
             background-size: cover;
             background-position: center;
-            height: 300px;
+            height: auto;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
             color: #fff;
+            padding: 100px 0;
+            position: relative;
+            overflow: hidden;
         }
-        
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.3) 100%);
+        }
+
         .page-header h1 {
             font-size: 48px;
             text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+            letter-spacing: 2px;
+            position: relative;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         /* Contact section */
@@ -122,14 +149,15 @@
         
         /* Contact form */
         .contact-form {
-            background-color: #fff;
+            background: linear-gradient(145deg, #ffffff 0%, #f8f8f8 100%);
             padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
         
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            position: relative;
         }
         
         .form-group label {
@@ -141,15 +169,17 @@
         
         .form-control {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
             font-size: 16px;
-            transition: border-color 0.3s;
+            transition: all 0.3s ease;
+            background-color: rgba(255, 255, 255, 0.9);
         }
         
         .form-control:focus {
             border-color: #8b0000;
+            box-shadow: 0 0 0 3px rgba(139, 0, 0, 0.1);
             outline: none;
         }
         
@@ -169,10 +199,29 @@
             cursor: pointer;
             transition: background-color 0.3s;
             text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+            z-index: -1;
         }
         
         .btn:hover {
             background-color: #6b0000;
+        }
+
+        .btn:hover::before {
+            left: 100%;
         }
         
         /* Contact info */
@@ -183,11 +232,18 @@
         }
         
         .info-box {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(145deg, #ffffff 0%, #f8f8f8 100%);
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             margin-bottom: 30px;
+            transform: translateY(0);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .info-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(139, 0, 0, 0.15);
         }
         
         .info-box:last-child {
@@ -195,9 +251,21 @@
         }
         
         .info-box h3 {
-            font-size: 22px;
+            font-size: 24px;
             margin-bottom: 20px;
             color: #8b0000;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .info-box h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background-color: #8b0000;
         }
         
         .info-item {

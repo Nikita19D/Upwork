@@ -93,7 +93,9 @@
         
         /* Menu navigation */
         .menu-nav {
-            background-color: #f0e6d2;
+            background: linear-gradient(145deg, #f0e6d2, #e8dbc3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             padding: 15px 0;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             position: sticky;
@@ -132,19 +134,22 @@
             text-decoration: none;
             font-size: 18px;
             font-weight: bold;
-            transition: color 0.3s;
-            padding: 5px 0;
+            transition: all 0.3s ease;
+            padding: 8px 16px;
             position: relative;
+            border-radius: 20px;
+            background: linear-gradient(145deg, transparent, rgba(139, 0, 0, 0.05));
         }
         
         .menu-nav ul li a::after {
             content: '';
             position: absolute;
             width: 0;
-            height: 2px;
+            height: 3px;
             bottom: 0;
             left: 0;
-            background-color: #8b0000;
+            background: linear-gradient(90deg, #8b0000, transparent);
+            border-radius: 2px;
             transition: width 0.3s;
         }
         
@@ -153,6 +158,8 @@
         }
         
         .menu-nav ul li a:hover {
+            background: linear-gradient(145deg, rgba(139, 0, 0, 0.1), rgba(139, 0, 0, 0.05));
+            transform: translateY(-2px);
             color: #6b0000;
         }
         
@@ -202,15 +209,29 @@
         
         /* Menu sections */
         .menu-section {
+            position: relative;
+            overflow: hidden;
             padding: 60px 0;
+        }
+        
+        .menu-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(139, 0, 0, 0.2), transparent);
         }
         
         .section-title {
             text-align: center;
-            font-size: 36px;
+            font-size: 2.5rem;
+            letter-spacing: 1px;
             margin-bottom: 20px;
             color: #8b0000;
             position: relative;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
         }
         
         .section-title::after {
@@ -219,9 +240,10 @@
             bottom: -15px;
             left: 50%;
             transform: translateX(-50%);
-            width: 80px;
-            height: 3px;
-            background-color: #8b0000;
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #8b0000, transparent);
+            border-radius: 2px;
         }
         
         .section-description {
@@ -235,14 +257,7 @@
         /* Menu items */
         .menu-category {
             margin-bottom: 60px;
-        }
-        
-        .category-title {
-            font-size: 28px;
-            margin-bottom: 30px;
-            color: #333;
-            text-align: center;
-            font-style: italic;
+            animation: fadeInUp 0.6s ease-out;
         }
         
         .menu-grid {
@@ -257,11 +272,15 @@
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         .menu-item:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(139, 0, 0, 0.15);
         }
         
         .menu-item-img {
@@ -273,9 +292,20 @@
             overflow: hidden;
         }
         
-        .menu-item-img:hover {
-            transform: scale(1.05);
-            transition: transform 0.3s ease-in-out;
+        .menu-item-img::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.4), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .menu-item:hover .menu-item-img::before {
+            opacity: 1;
         }
         
         .menu-item-content {
@@ -284,22 +314,35 @@
         }
         
         .menu-item-header {
+            position: relative;
             display: flex;
             justify-content: space-between;
             margin-bottom: 10px;
             border-bottom: 1px dashed #ddd;
-            padding-bottom: 5px;
+            padding-bottom: 12px;
+        }
+        
+        .menu-item-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, #8b0000, transparent);
         }
         
         .menu-item h3 {
-            font-size: 22px;
+            font-size: 24px;
             color: #8b0000;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
         
         .menu-item-price {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: bold;
-            color: #333;
+            color: #8b0000;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
         
         .menu-item-description {
@@ -308,9 +351,20 @@
         }
         
         .dietary-info {
+            display: inline-block;
             font-size: 14px;
             color: #8b0000;
             font-style: italic;
+            padding: 4px 12px;
+            border-radius: 15px;
+            background: linear-gradient(145deg, rgba(139, 0, 0, 0.1), rgba(139, 0, 0, 0.05));
+            border: 1px solid rgba(139, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .dietary-info:hover {
+            background: linear-gradient(145deg, rgba(139, 0, 0, 0.15), rgba(139, 0, 0, 0.1));
+            transform: translateY(-2px);
         }
         
         .wine-bottle-price {
@@ -348,18 +402,28 @@
         
         /* Chef specials */
         .chef-special {
-            background-color: #8b0000;
-            color: #fff;
+            background: linear-gradient(145deg, #8b0000, #6b0000);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             padding: 30px;
             border-radius: 8px;
             margin-bottom: 40px;
             text-align: center;
+            transform: translateY(0);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .chef-special:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(139, 0, 0, 0.2);
         }
         
         .chef-special h3 {
             font-size: 28px;
             margin-bottom: 15px;
             color: #f8e9a1;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
         }
         
         .chef-special p {
@@ -454,12 +518,20 @@
                 height: 200px;
             }
             
+            .menu-item:hover {
+                transform: translateY(-5px) scale(1.01);
+            }
+            
             .drinks-grid {
                 grid-template-columns: 1fr;
             }
             
             .footer-content {
                 grid-template-columns: 1fr;
+            }
+            
+            .section-title {
+                font-size: 2rem;
             }
         }
 
@@ -567,6 +639,12 @@
             .categories-overlay.active {
                 display: block;
             }
+        }
+
+        /* Category Transitions */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
@@ -1008,7 +1086,7 @@
                     </div>
                 </div>
                 
-                <div class="menu-item">
+                <div class="menu-item"></div>
                     <div class="menu-item-img" style="background-image: url('https://images.unsplash.com/photo-1551751299-1b51cab2694c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
                     <div class="menu-item-content">
                         <div class="menu-item-header">
