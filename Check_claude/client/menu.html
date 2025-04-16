@@ -6,6 +6,10 @@
     <title>Menu - Bella Cucina</title>
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital@0;1&display=swap" rel="stylesheet">
     <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
         /* Base styles */
         * {
             margin: 0;
@@ -339,6 +343,7 @@
             min-height: 180px;
             position: relative;
             overflow: hidden;
+            loading: lazy;
         }
         
         .menu-item-img::before {
