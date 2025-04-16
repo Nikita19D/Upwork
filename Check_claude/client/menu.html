@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Menu - Bella Cucina</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital@0;1&display=swap" rel="stylesheet">
     <style>
         /* Base styles */
         * {
@@ -27,7 +28,9 @@
         
         /* Header styles */
         header {
-            background-color: #8b0000;
+            background: linear-gradient(145deg, #8b0000, #6b0000);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             color: #fff;
             padding: 20px 0;
             position: sticky;
@@ -46,6 +49,12 @@
             font-size: 28px;
             font-weight: bold;
             font-style: italic;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .logo:hover {
+            transform: scale(1.05);
         }
         
         .logo span {
@@ -72,12 +81,14 @@
             color: #f8e9a1;
         }
         
-        /* Menu page header */
+        /* Page header styles */
         .page-header {
-            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80');
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80');
             background-size: cover;
             background-position: center;
-            height: 300px;
+            height: 400px;
+            position: relative;
+            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -85,10 +96,22 @@
             color: #fff;
         }
         
+        .page-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 30%;
+            background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
+        }
+        
         .page-header h1 {
-            font-size: 48px;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 4px 8px rgba(0,0,0,0.6);
+            letter-spacing: 2px;
+            animation: fadeInDown 0.8s ease-out;
         }
         
         /* Menu navigation */
@@ -412,29 +435,51 @@
             text-align: center;
             transform: translateY(0);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .chef-special::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: 0.8s;
         }
         
         .chef-special:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(139, 0, 0, 0.2);
+            box-shadow: 0 20px 40px rgba(139, 0, 0, 0.2);
+        }
+        
+        .chef-special:hover::before {
+            left: 100%;
         }
         
         .chef-special h3 {
-            font-size: 28px;
-            margin-bottom: 15px;
-            color: #f8e9a1;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            font-size: 2rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            letter-spacing: 1px;
         }
         
         .chef-special p {
-            margin-bottom: 20px;
+            font-family: 'Crimson Text', Georgia, serif;
+            font-size: 1.2rem;
+            line-height: 1.8;
             font-style: italic;
+            margin: 1.5rem 0;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
         }
         
         .chef-special-price {
-            font-size: 24px;
+            font-size: 1.8rem;
             font-weight: bold;
-            color: #f8e9a1;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            letter-spacing: 1px;
         }
         
         /* Footer */
@@ -645,6 +690,18 @@
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Add animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
