@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bella Cucina - Authentic Italian Restaurant</title>
+    <link rel="stylesheet" href="optimizations.css">
     <style>
         /* Base styles */
         * {
@@ -25,7 +26,6 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
-            animation: fadeIn 0.6s ease-out;
         }
         
         /* Hamburger Menu Button */
@@ -136,6 +136,7 @@
         
         .hero-content {
             max-width: 800px;
+            animation: none;
         }
         
         .hero h1 {
@@ -174,124 +175,103 @@
         /* Features section */
         .features {
             padding: 80px 0;
-            perspective: 1000px;
         }
-        
+
         .features-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 30px;
         }
-        
+
         .feature {
             text-align: center;
             padding: 30px;
-            background: linear-gradient(145deg, #ffffff 0%, #f8f8f8 100%);
+            background: #fff;
             border-radius: 15px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-            transform-style: preserve-3d;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s ease forwards;
         }
-        
+
+        .feature:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .feature:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
         .feature:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 12px 40px rgba(139, 0, 0, 0.15);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(139, 0, 0, 0.15);
         }
-        
-        .feature::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(45deg, transparent, rgba(139, 0, 0, 0.1), transparent);
-            transform: translateY(100%);
-            transition: transform 0.6s ease;
-        }
-        
-        .feature:hover::before {
-            transform: translateY(0);
-        }
-        
+
         .feature-image-wrapper {
             width: 150px;
             height: 150px;
             margin: 0 auto 25px;
             border-radius: 50%;
-            position: relative;
-            background: linear-gradient(45deg, #8b0000, #6b0000);
-            padding: 3px;
-            transition: transform 0.5s ease;
+            overflow: hidden;
+            border: 3px solid #8b0000;
+            transition: transform 0.3s ease;
         }
-        
-        .feature-image-wrapper::before {
-            content: '';
-            position: absolute;
-            inset: -2px;
-            border-radius: 50%;
-            padding: 2px;
-            background: linear-gradient(45deg, #8b0000, transparent, #8b0000);
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-        
+
         .feature:hover .feature-image-wrapper {
-            transform: translateZ(20px);
+            transform: scale(1.05);
         }
-        
-        .feature:hover .feature-image-wrapper::before {
-            opacity: 1;
-            animation: rotate 4s linear infinite;
-        }
-        
+
         .feature-image-wrapper img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 50%;
-            transition: transform 0.5s ease;
-            transform: scale(1.01);
+            transition: transform 0.3s ease;
         }
-        
+
         .feature:hover .feature-image-wrapper img {
             transform: scale(1.1);
         }
-        
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+
+        .feature h3 {
+            color: #8b0000;
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
         }
-        
-        .features > .container > .features-grid > .feature:first-child .feature-image-wrapper {
-            background: linear-gradient(45deg, #8b0000, #4a0000);
+
+        .feature p {
+            color: #666;
+            line-height: 1.6;
         }
-        
-        .features > .container > .features-grid > .feature:nth-child(2) .feature-image-wrapper {
-            background: linear-gradient(45deg, #6b0000, #2a0000);
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        
-        .features > .container > .features-grid > .feature:last-child .feature-image-wrapper {
-            background: linear-gradient(45deg, #4a0000, #1a0000);
-        }
-        
+
         @media (max-width: 768px) {
-            .feature {
-                transform: none !important;
+            .features-grid {
+                grid-template-columns: 1fr;
             }
             
-            .feature-image-wrapper {
-                width: 120px;
-                height: 120px;
+            .feature {
+                animation: none;
+                opacity: 1;
+                transform: none;
+            }
+            
+            .feature:hover {
+                transform: none;
             }
         }
-        
+
         /* Menu preview section */
         .menu-preview {
             padding: 80px 0;
@@ -314,6 +294,7 @@
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: none;
         }
         
         .menu-item:hover {
@@ -583,16 +564,20 @@
             width: 100px;
         }
 
-        /* Add page transition effects */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
         /* Smooth scrolling for anchor links */
         html {
             scroll-behavior: smooth;
             scroll-padding-top: 80px;
+        }
+
+        /* Add simple fade-in for sections */
+        .section {
+            opacity: 0;
+        }
+
+        .section.visible {
+            opacity: 1;
+            transition: opacity 0.3s ease-out;
         }
     </style>
 </head>
@@ -620,7 +605,7 @@
     </header>
 
     <!-- Hero Section -->
-    <section class="hero">
+    <section class="hero section">
         <div class="container hero-content">
             <h1>Authentic Italian Cuisine</h1>
             <p>Experience the rich flavors of Italy right in your neighborhood. Our chef brings generations of family recipes straight from Naples to your table.</p>
@@ -629,37 +614,49 @@
     </section>
 
     <!-- Features Section -->
-    <section class="features">
+    <section class="features section" aria-label="Restaurant features">
         <div class="container">
             <h2 class="section-title">Why Choose Us</h2>
             <div class="features-grid">
-                <div class="feature">
+                <article class="feature" data-aos="fade-up">
                     <div class="feature-image-wrapper">
-                        <img src="https://images.unsplash.com/photo-1606787366850-de6330128bfc?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150&q=80" alt="Fresh Ingredients">
+                        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" 
+                             data-src="https://images.unsplash.com/photo-1606787366850-de6330128bfc?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150&q=80" 
+                             alt="Fresh locally-sourced ingredients" 
+                             loading="lazy"
+                             class="lazy">
                     </div>
                     <h3>Fresh Ingredients</h3>
-                    <p>We source only the freshest, locally-grown ingredients to ensure authentic flavors in every dish.</p>
-                </div>
-                <div class="feature">
+                    <p>We partner with local farmers to source the freshest seasonal ingredients, delivering authentic Italian flavors in every bite.</p>
+                </article>
+                <article class="feature" data-aos="fade-up" data-aos-delay="100">
                     <div class="feature-image-wrapper">
-                        <img src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150&q=80" alt="Master Chef">
+                        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" 
+                             data-src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150&q=80" 
+                             alt="Our master chef at work" 
+                             loading="lazy"
+                             class="lazy">
                     </div>
-                    <h3>Master Chef</h3>
-                    <p>Our head chef trained in Italy and brings over 25 years of culinary expertise to create unforgettable dishes.</p>
-                </div>
-                <div class="feature">
+                    <h3>Expert Chefs</h3>
+                    <p>Led by Naples-trained Chef Mario, our culinary team crafts authentic dishes using time-honored family recipes.</p>
+                </article>
+                <article class="feature" data-aos="fade-up" data-aos-delay="200">
                     <div class="feature-image-wrapper">
-                        <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150&q=80" alt="Cozy Atmosphere">
+                        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" 
+                             data-src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150&q=80" 
+                             alt="Our cozy restaurant interior" 
+                             loading="lazy"
+                             class="lazy">
                     </div>
-                    <h3>Cozy Atmosphere</h3>
-                    <p>Our restaurant offers the perfect ambiance for romantic dinners, family gatherings, or business meals.</p>
-                </div>
+                    <h3>Perfect Ambiance</h3>
+                    <p>Experience the warmth of traditional Italian hospitality in our carefully curated, intimate dining space.</p>
+                </article>
             </div>
         </div>
     </section>
 
     <!-- Menu Preview Section -->
-    <section class="menu-preview">
+    <section class="menu-preview section">
         <div class="container">
             <h2 class="section-title">Popular Dishes</h2>
             <div class="menu-items">
@@ -703,7 +700,7 @@
     </section>
 
     <!-- Testimonials Section -->
-    <section class="testimonials">
+    <section class="testimonials section">
         <div class="container">
             <h2 class="section-title">What Our Customers Say</h2>
             <div class="testimonials-grid">
@@ -772,6 +769,38 @@
                 nav.classList.remove('active');
                 overlay.classList.remove('active');
             });
+
+            // Add intersection observer for lazy loading sections
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            document.querySelectorAll('.section').forEach(section => {
+                observer.observe(section);
+            });
+
+            // Lazy loading for feature images
+            const lazyImages = document.querySelectorAll("img.lazy");
+            
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.dataset.src;
+                        img.classList.remove("lazy");
+                        observer.unobserve(img);
+                    }
+                });
+            });
+
+            lazyImages.forEach(img => imageObserver.observe(img));
         });
     </script>
 </body>

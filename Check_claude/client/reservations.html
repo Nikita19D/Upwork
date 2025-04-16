@@ -74,65 +74,25 @@
         
         /* Page header */
         .page-header {
-            background-image: linear-gradient(rgba(139, 0, 0, 0.8), rgba(0, 0, 0, 0.7)), url('/api/placeholder/1200/300');
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/api/placeholder/1200/300');
             background-size: cover;
             background-position: center;
             color: #fff;
             text-align: center;
-            padding: 100px 0;
-            position: relative;
-            overflow: hidden;
+            padding: 80px 0;
         }
-
-        .page-header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.3) 100%);
-        }
-
+        
         .page-header h1 {
-            font-size: 48px;
-            margin-bottom: 25px;
+            font-size: 42px;
+            margin-bottom: 20px;
             text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
-            letter-spacing: 2px;
-            position: relative;
-            animation: fadeInDown 0.8s ease-out;
         }
-
+        
         .page-header p {
-            font-size: 20px;
+            font-size: 18px;
             max-width: 800px;
             margin: 0 auto;
             text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
-            letter-spacing: 1px;
-            opacity: 0.9;
-            animation: fadeInUp 0.8s ease-out;
-        }
-
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
         
         /* Reservations content */
