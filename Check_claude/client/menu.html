@@ -260,6 +260,43 @@
             }
         }
         
+        /* Enhanced Mobile Menu Navigation */
+        @media (max-width: 768px) {
+            .menu-nav {
+                background: rgba(240, 230, 210, 0.95);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            }
+
+            .menu-nav .container {
+                padding: 0;
+                scroll-snap-type: x mandatory;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .menu-nav ul {
+                padding: 0 15px;
+                gap: 5px;
+                scroll-snap-align: start;
+            }
+
+            .menu-nav ul li a {
+                padding: 10px 20px;
+                font-size: 16px;
+                white-space: nowrap;
+                display: inline-block;
+                border-radius: 25px;
+                background: rgba(255, 255, 255, 0.5);
+                box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            }
+
+            .menu-nav ul li a.active {
+                background: #8b0000;
+                color: #fff;
+            }
+        }
+        
         /* Menu sections */
         .menu-section {
             position: relative;
@@ -343,7 +380,6 @@
             min-height: 180px;
             position: relative;
             overflow: hidden;
-            loading: lazy;
         }
         
         .menu-item-img::before {
@@ -1202,6 +1238,53 @@
             // Prevent clicks inside menu from closing it
             menuNav.addEventListener('click', function(e) {
                 e.stopPropagation();
+            });
+
+            // Smooth scroll with offset for menu categories
+            document.querySelectorAll('.menu-nav a').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    const offset = 120; // Account for fixed header and menu nav
+
+                    window.scrollTo({
+                        top: targetElement.offsetTop - offset,
+                        behavior: 'smooth'
+                    });
+
+                    // Update active state
+                    document.querySelectorAll('.menu-nav a').forEach(a => a.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Highlight current section while scrolling
+            const menuSections = document.querySelectorAll('.menu-section');
+            const menuLinksScroll = document.querySelectorAll('.menu-nav a');
+            
+            window.addEventListener('scroll', () => {
+                const fromTop = window.scrollY + 150;
+                
+                menuSections.forEach(section => {
+                    if (
+                        section.offsetTop <= fromTop &&
+                        section.offsetTop + section.offsetHeight > fromTop
+                    ) {
+                        const targetLink = document.querySelector(`.menu-nav a[href="#${section.id}"]`);
+                        menuLinksScroll.forEach(link => link.classList.remove('active'));
+                        targetLink?.classList.add('active');
+
+                        // Center active link in mobile view
+                        if (window.innerWidth <= 768) {
+                            targetLink?.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'nearest',
+                                inline: 'center'
+                            });
+                        }
+                    }
+                });
             });
         });
     </script>
