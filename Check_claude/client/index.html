@@ -4,10 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bella Cucina - Authentic Italian Restaurant</title>
-    <link rel="preconnect" href="https://images.unsplash.com">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="dns-prefetch" href="https://images.unsplash.com">
-    <link rel="preload" as="image" href="https://images.unsplash.com/photo-1514933651103-005eec06c04b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" fetchpriority="high">
     <style>
         /* Base styles */
         * {
@@ -30,9 +26,6 @@
             margin: 0 auto;
             padding: 0 20px;
             animation: fadeIn 0.6s ease-out;
-            contain: layout style;
-            content-visibility: auto;
-            contain-intrinsic-size: 0 500px;
         }
         
         /* Hamburger Menu Button */
@@ -147,7 +140,7 @@
             text-align: center;
             color: #fff;
             min-height: 400px;
-            contain: layout paint style;
+            contain: layout paint;
         }
         
         .hero-content {
@@ -327,8 +320,6 @@
         .menu-preview {
             padding: 80px 0;
             background-color: #f0e6d2;
-            content-visibility: auto;
-            contain-intrinsic-size: 0 500px;
         }
         
         .menu-items {
@@ -394,8 +385,6 @@
         .testimonials {
             padding: 80px 0;
             background: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.9)), url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0') center/cover fixed;
-            content-visibility: auto;
-            contain-intrinsic-size: 0 500px;
         }
         
         .testimonials-grid {
@@ -472,8 +461,6 @@
             background: linear-gradient(145deg, #333, #222);
             padding: 60px 0 30px;
             position: relative;
-            content-visibility: auto;
-            contain-intrinsic-size: 0 500px;
         }
         
         footer::before {
@@ -674,7 +661,7 @@
             height: auto;
             aspect-ratio: attr(width) / attr(height);
             contain: paint;
-            content-visibility: auto;
+            will-change: transform;
         }
 
         .feature-image-wrapper img,
@@ -700,27 +687,6 @@
             }
 
             .fade-in.visible {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            * {
-                animation: none !important;
-                transition: none !important;
-            }
-        }
-
-        @media (prefers-reduced-motion: no-preference) {
-            .animate-on-scroll {
-                opacity: 0;
-                transform: translateY(20px);
-                transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-                will-change: transform, opacity;
-            }
-
-            .animate-on-scroll.visible {
                 opacity: 1;
                 transform: translateY(0);
             }
@@ -910,60 +876,7 @@
                 nav.classList.remove('active');
                 overlay.classList.remove('active');
             });
-
-            // Add intersection observer for animations
-            const observerOptions = {
-                root: null,
-                rootMargin: '0px',
-                threshold: 0.1
-            };
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                        observer.unobserve(entry.target); // Stop observing once visible
-                    }
-                });
-            }, observerOptions);
-
-            // Observe elements with animation
-            document.querySelectorAll('.animate-on-scroll').forEach(el => {
-                observer.observe(el);
-            });
-
-            // Optimize image loading
-            document.querySelectorAll('img').forEach(img => {
-                if (!img.closest('.hero')) {
-                    img.loading = 'lazy';
-                    img.decoding = 'async';
-                }
-            });
         });
-
-        // Add requestIdleCallback for non-critical operations
-        window.requestIdleCallback = window.requestIdleCallback || function(cb) {
-            return setTimeout(() => {
-                const start = Date.now();
-                cb({
-                    didTimeout: false,
-                    timeRemaining: () => Math.max(0, 50 - (Date.now() - start))
-                });
-            }, 1);
-        };
-
-        // Defer non-critical CSS
-        const loadDeferredStyles = () => {
-            requestIdleCallback(() => {
-                // Load non-critical CSS here
-            });
-        };
-
-        if (window.requestIdleCallback) {
-            loadDeferredStyles();
-        } else {
-            window.addEventListener('load', loadDeferredStyles);
-        }
     </script>
 </body>
 </html>
