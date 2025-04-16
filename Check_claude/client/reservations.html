@@ -994,6 +994,15 @@
         }
 
         function selectTable(tableNumber) {
+            const guestsSelect = document.getElementById('guests');
+            const numGuests = parseInt(guestsSelect.value) || 0;
+            const tableInfo = tableData[tableNumber];
+
+            if (numGuests > tableInfo.capacity) {
+                showMessage(`This table only seats ${tableInfo.capacity} people. Please select a larger table for your party of ${numGuests}.`, 'error');
+                return;
+            }
+
             const tables = document.querySelectorAll('.table');
             tables.forEach(table => table.classList.remove('selected'));
             const selected = document.querySelector(`.table[data-table="${tableNumber}"]`);
@@ -1002,6 +1011,20 @@
             document.getElementById('selectedTable').value = `Table ${tableNumber}`;
             hideTooltip();
         }
+
+        document.getElementById('guests').addEventListener('change', function() {
+            if (selectedTable) {
+                const numGuests = parseInt(this.value) || 0;
+                const tableInfo = tableData[selectedTable];
+                
+                if (numGuests > tableInfo.capacity) {
+                    showMessage(`Your selected table only seats ${tableInfo.capacity} people. Please select a different table for your party of ${numGuests}.`, 'error');
+                    selectedTable = null;
+                    document.querySelector('.table.selected')?.classList.remove('selected');
+                    document.getElementById('selectedTable').value = '';
+                }
+            }
+        });
 
         function confirmTable() {
             if (selectedTable) {
