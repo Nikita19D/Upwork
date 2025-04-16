@@ -623,6 +623,61 @@
                 display: block;
             }
         }
+
+        /* Additional responsive styles */
+        @media (max-width: 768px) {
+            .restaurant-layout {
+                width: 300px;
+                height: 300px;
+                transform: scale(0.9);
+                margin: 10px auto;
+            }
+
+            .kitchen {
+                width: 60px;
+                height: 60px;
+                font-size: 14px;
+            }
+
+            .table {
+                width: 45px;
+                height: 30px;
+                font-size: 14px;
+                /* Increase touch target size with padding */
+                padding: 15px;
+                /* Add proper touch feedback */
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            .table::before {
+                content: '';
+                position: absolute;
+                top: -10px;
+                left: -10px;
+                right: -10px;
+                bottom: -10px;
+            }
+
+            .tooltip {
+                /* Ensure tooltip is visible on mobile */
+                position: fixed;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                top: auto;
+                font-size: 16px;
+                padding: 15px;
+                min-width: 200px;
+                z-index: 1010;
+            }
+
+            .modal-content {
+                width: 95%;
+                max-width: 350px;
+                padding: 15px;
+                margin: 10px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -912,9 +967,19 @@
                                Capacity: ${tableInfo.capacity} people<br>
                                Location: ${tableInfo.location}`;
                 
-                const touch = event.pageY ? event : event.touches[0];
-                tooltip.style.left = `${touch.pageX - 60}px`;
-                tooltip.style.top = `${touch.pageY - 100}px`;
+                if (window.innerWidth <= 768) {
+                    // Fixed position at bottom for mobile
+                    tooltip.style.left = '50%';
+                    tooltip.style.bottom = '20px';
+                    tooltip.style.top = 'auto';
+                    tooltip.style.transform = 'translateX(-50%)';
+                } else {
+                    // Desktop positioning
+                    const touch = event.pageY ? event : event.touches[0];
+                    tooltip.style.left = `${touch.pageX - 60}px`;
+                    tooltip.style.top = `${touch.pageY - 100}px`;
+                    tooltip.style.transform = 'none';
+                }
                 
                 requestAnimationFrame(() => {
                     tooltip.classList.add('visible');
@@ -962,10 +1027,29 @@
             table.addEventListener('touchstart', (event) => {
                 event.preventDefault();
                 const tableNumber = table.getAttribute('data-table');
-                showTooltip(tableNumber, event.touches[0]);
+                showTooltip(tableNumber, event);
+                
+                // Add active state for touch feedback
+                table.style.backgroundColor = '#6b0000';
             });
 
-            table.addEventListener('touchend', () => {
+            table.addEventListener('touchend', (event) => {
+                event.preventDefault();
+                const tableNumber = table.getAttribute('data-table');
+                selectTable(tableNumber);
+                
+                // Remove active state
+                table.style.backgroundColor = '';
+                
+                // Hide tooltip after selection on mobile
+                if (window.innerWidth <= 768) {
+                    setTimeout(() => hideTooltip(), 1500);
+                }
+            });
+
+            // Cancel touch feedback if touch is moved away
+            table.addEventListener('touchcancel', () => {
+                table.style.backgroundColor = '';
                 hideTooltip();
             });
 
