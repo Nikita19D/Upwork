@@ -160,7 +160,7 @@
             .menu-nav {
                 position: fixed;
                 top: 0;
-                right: -280px;  /* Match the width to ensure it's fully hidden */
+                left: -280px;  /* Changed from right to left */
                 width: 280px;
                 height: 100vh;
                 background-color: #8b0000;
@@ -168,12 +168,12 @@
                 transition: all 0.3s ease-in-out;
                 z-index: 1003;
                 overflow-y: auto;
-                transform: translateX(100%); /* Move it completely off-screen */
+                transform: translateX(-100%); /* Changed to slide from left */
             }
 
             .menu-nav.active {
-                right: 0;
-                transform: translateX(0); /* Bring it back on screen */
+                left: 0;  /* Changed from right to left */
+                transform: translateX(0);
             }
 
             .menu-nav ul {
