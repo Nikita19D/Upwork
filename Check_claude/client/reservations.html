@@ -1014,6 +1014,14 @@
             const date = document.getElementById('date').value;
             const time = document.getElementById('time').value;
             
+            // Clear any previous selection when date/time changes
+            selectedTable = null;
+            document.getElementById('selectedTable').value = '';
+            document.querySelectorAll('.table').forEach(table => {
+                table.classList.remove('selected');
+                table.classList.add('disabled');  // Initially disable all tables
+            });
+            
             if (!date || !time) return;
 
             try {
@@ -1032,11 +1040,16 @@
                 const tables = document.querySelectorAll('.table');
                 
                 tables.forEach(table => {
+                    table.classList.remove('disabled'); // Re-enable all tables first
                     const tableNumber = table.getAttribute('data-table');
                     if (data.bookedTables.includes(parseInt(tableNumber))) {
                         table.classList.add('booked');
+                        table.style.backgroundColor = '#cccccc';
+                        table.style.cursor = 'not-allowed';
                     } else {
                         table.classList.remove('booked');
+                        table.style.backgroundColor = '';
+                        table.style.cursor = 'pointer';
                     }
                 });
             } catch (error) {
@@ -1046,7 +1059,16 @@
         }
 
         function openModal() {
+            const date = document.getElementById('date').value;
+            const time = document.getElementById('time').value;
+            
+            if (!date || !time) {
+                showMessage('Please select a date and time first', 'warning');
+                return;
+            }
+            
             document.getElementById('tableModal').style.display = 'flex';
+            checkTableAvailability(); // Check availability when modal opens
         }
 
         function closeModal() {
