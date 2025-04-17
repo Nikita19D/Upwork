@@ -516,6 +516,18 @@
             color: #fff;
         }
 
+        .table.booked {
+            background-color: #cccccc;
+            border-color: #999999;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .table.booked:hover {
+            background-color: #cccccc;
+            color: #666;
+        }
+
         /* Tooltip styles */
         .tooltip {
             position: absolute;
@@ -561,6 +573,10 @@
 
         .message.error {
             background-color: #f44336;
+        }
+
+        .message.warning {
+            background-color: #ff9800;
         }
 
         @keyframes slideIn {
@@ -991,6 +1007,44 @@
         const tooltip = document.getElementById('tableTooltip');
         let tooltipTimeout;
 
+        document.getElementById('date').addEventListener('change', checkTableAvailability);
+        document.getElementById('time').addEventListener('change', checkTableAvailability);
+
+        async function checkTableAvailability() {
+            const date = document.getElementById('date').value;
+            const time = document.getElementById('time').value;
+            
+            if (!date || !time) return;
+
+            try {
+                const response = await fetch(`${window.API_BASE_URL}/api/tables/availability?date=${date}&time=${time}`, {
+                    headers: {
+                        'Accept': 'application/json'
+                    },
+                    credentials: 'include'
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch table availability');
+                }
+
+                const data = await response.json();
+                const tables = document.querySelectorAll('.table');
+                
+                tables.forEach(table => {
+                    const tableNumber = table.getAttribute('data-table');
+                    if (data.bookedTables.includes(parseInt(tableNumber))) {
+                        table.classList.add('booked');
+                    } else {
+                        table.classList.remove('booked');
+                    }
+                });
+            } catch (error) {
+                console.error('Error checking table availability:', error);
+                showMessage('Unable to check table availability', 'error');
+            }
+        }
+
         function openModal() {
             document.getElementById('tableModal').style.display = 'flex';
         }
@@ -1034,6 +1088,12 @@
         }
 
         function selectTable(tableNumber) {
+            const table = document.querySelector(`.table[data-table="${tableNumber}"]`);
+            if (table.classList.contains('booked')) {
+                showMessage('This table is already booked for the selected time', 'warning');
+                return;
+            }
+
             const guestsSelect = document.getElementById('guests');
             const numGuests = parseInt(guestsSelect.value) || 0;
             const tableInfo = tableData[tableNumber];

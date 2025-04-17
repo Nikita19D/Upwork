@@ -493,6 +493,47 @@ async function checkTableAvailability(client, tableNumber, date, time) {
     return parseInt(result.rows[0].count) === 0;
 }
 
+// Add table availability endpoint
+app.get('/api/tables/availability', async (req, res) => {
+    const { date, time } = req.query;
+    
+    if (!date || !time) {
+        return res.status(400).json({ 
+            success: false, 
+            message: 'Date and time are required' 
+        });
+    }
+
+    let client;
+    try {
+        client = await pool.connect();
+        
+        // Get all tables that are booked for the specified date and time
+        const result = await client.query(
+            `SELECT DISTINCT t.table_number 
+             FROM tables t 
+             JOIN reservations r ON t.table_id = r.table_id 
+             WHERE r.reservation_date = $1 
+             AND r.reservation_time = $2 
+             AND r.status NOT IN ('cancelled', 'completed')`,
+            [date, time]
+        );
+
+        res.json({
+            success: true,
+            bookedTables: result.rows.map(row => row.table_number)
+        });
+    } catch (err) {
+        console.error('Error checking table availability:', err);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Error checking table availability'
+        });
+    } finally {
+        client?.release();
+    }
+});
+
 // Update reservation endpoint with improved error handling
 app.post('/api/reservations', async (req, res) => {
     let client;
