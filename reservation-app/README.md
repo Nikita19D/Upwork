@@ -1,44 +1,50 @@
-# reservation-app
 
-This project is a reservation application built with React. It provides a user-friendly interface for managing reservations, including features for viewing, creating, and managing bookings.
+# TypeScript
 
-## Project Structure
+[![CI](https://github.com/microsoft/TypeScript/actions/workflows/ci.yml/badge.svg)](https://github.com/microsoft/TypeScript/actions/workflows/ci.yml)
+[![npm version](https://badge.fury.io/js/typescript.svg)](https://www.npmjs.com/package/typescript)
+[![Downloads](https://img.shields.io/npm/dm/typescript.svg)](https://www.npmjs.com/package/typescript)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/microsoft/TypeScript/badge)](https://securityscorecards.dev/viewer/?uri=github.com/microsoft/TypeScript)
 
-- **src/components**: Contains reusable UI components used throughout the application.
-- **src/screens**: Defines the main screens of the application, laying out the structure for different views.
-- **src/navigation**: Manages the navigation configuration for the app, handling routing between different screens.
-- **src/services**: Includes functions for API calls and database connections, facilitating data fetching and submission.
-- **src/hooks**: Exports custom React hooks that encapsulate reusable logic for components.
-- **src/contexts**: Provides context providers for managing global state across the application.
-- **src/utils**: Contains helper functions that assist with various tasks throughout the app.
-- **App.tsx**: The entry point of the application, rendering the main component and setting up the app structure.
-- **package.json**: Configuration file for npm, listing the dependencies and scripts for the project.
-- **tsconfig.json**: Configuration file for TypeScript, specifying compiler options and files to include in the compilation.
 
-## Getting Started
+[TypeScript](https://www.typescriptlang.org/) is a language for application-scale JavaScript. TypeScript adds optional types to JavaScript that support tools for large-scale JavaScript applications for any browser, for any host, on any OS. TypeScript compiles to readable, standards-based JavaScript. Try it out at the [playground](https://www.typescriptlang.org/play/), and stay up to date via [our blog](https://blogs.msdn.microsoft.com/typescript) and [Twitter account](https://twitter.com/typescript).
 
-To get started with the project, clone the repository and install the dependencies:
+Find others who are using TypeScript at [our community page](https://www.typescriptlang.org/community/).
+
+## Installing
+
+For the latest stable version:
 
 ```bash
-git clone <repository-url>
-cd reservation-app
-npm install
+npm install -D typescript
 ```
 
-## Running the Application
-
-To run the application, use the following command:
+For our nightly builds:
 
 ```bash
-npm start
+npm install -D typescript@next
 ```
 
-This will start the development server and open the application in your default web browser.
+## Contribute
 
-## Contributing
+There are many ways to [contribute](https://github.com/microsoft/TypeScript/blob/main/CONTRIBUTING.md) to TypeScript.
+* [Submit bugs](https://github.com/microsoft/TypeScript/issues) and help us verify fixes as they are checked in.
+* Review the [source code changes](https://github.com/microsoft/TypeScript/pulls).
+* Engage with other TypeScript users and developers on [StackOverflow](https://stackoverflow.com/questions/tagged/typescript).
+* Help each other in the [TypeScript Community Discord](https://discord.gg/typescript).
+* Join the [#typescript](https://twitter.com/search?q=%23TypeScript) discussion on Twitter.
+* [Contribute bug fixes](https://github.com/microsoft/TypeScript/blob/main/CONTRIBUTING.md).
 
-Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
+This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see
+the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com)
+with any additional questions or comments.
 
-## License
+## Documentation
 
-This project is licensed under the MIT License.
+*  [TypeScript in 5 minutes](https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes.html)
+*  [Programming handbook](https://www.typescriptlang.org/docs/handbook/intro.html)
+*  [Homepage](https://www.typescriptlang.org/)
+
+## Roadmap
+
+For details on our planned features and future direction, please refer to our [roadmap](https://github.com/microsoft/TypeScript/wiki/Roadmap).

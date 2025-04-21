@@ -1,20 +1,28 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from './src/screens/HomeScreen';
-import DetailsScreen from './src/screens/DetailsScreen';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { Provider as PaperProvider, MD3LightTheme as DefaultTheme } from 'react-native-paper';
+import { AuthProvider } from './src/contexts/AuthContext';
+import AppNavigator from './src/navigation/AppNavigator';
 
-const Stack = createStackNavigator();
-
-const App = () => {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Details" component={DetailsScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
+// Define a custom theme for the app using MD3 (Material You)
+const theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: '#1E88E5',
+    secondaryContainer: '#FF5722',
+    tertiary: '#FF9800',
+  },
 };
 
-export default App;
+export default function App() {
+  return (
+    <SafeAreaProvider>
+      <PaperProvider theme={theme} children={
+        <AuthProvider>
+          <AppNavigator />
+        </AuthProvider>
+      } />
+    </SafeAreaProvider>
+  );
+}
