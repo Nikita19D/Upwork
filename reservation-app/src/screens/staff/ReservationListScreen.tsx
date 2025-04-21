@@ -12,21 +12,19 @@ import {
   IconButton 
 } from 'react-native-paper';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { format } from 'date-fns';
 import { api } from '../../services/api';
 import { Reservation, ReservationStatus } from '../../types/reservation';
 import { useAuth } from '../../contexts/AuthContext';
 import { UserRole } from '../../types/auth';
 
-// Define the navigation type for this screen
-type ReservationStackParamList = {
+// Define the navigation params for staff screens
+type StaffStackParamList = {
   ReservationList: undefined;
   ReservationDetail: { reservationId: string };
   CreateReservation: undefined;
 };
-
-type ReservationScreenNavigationProp = NativeStackNavigationProp<ReservationStackParamList>;
 
 const ReservationListScreen = () => {
   const [reservations, setReservations] = useState<Reservation[]>([]);
@@ -39,7 +37,7 @@ const ReservationListScreen = () => {
   const [menuVisible, setMenuVisible] = useState(false);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   
-  const navigation = useNavigation<ReservationScreenNavigationProp>();
+  const navigation = useNavigation<StackNavigationProp<StaffStackParamList>>();
   const { user } = useAuth();
 
   const fetchReservations = async () => {

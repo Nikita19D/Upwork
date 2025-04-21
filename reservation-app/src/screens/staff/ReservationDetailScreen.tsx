@@ -1,203 +1,354 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, StyleSheet, ScrollView, Alert } from 'react-native';
+import { 
+  Text, 
+  Card, 
+  Button, 
+  Divider, 
+  Chip, 
+  ActivityIndicator, 
+  Menu, 
+  Portal, 
+  Dialog, 
+  TextInput, 
+  IconButton 
+} from 'react-native-paper';
+import { useRoute, useNavigation, RouteProp, useFocusEffect } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { format } from 'date-fns';
+import { api } from '../../services/api';
+import { Reservation, ReservationStatus } from '../../types/reservation';
+import { useAuth } from '../../contexts/AuthContext';
+import { UserRole } from '../../types/auth';
 
-// Mock reservation data - in a real app, this would come from an API
-const mockReservation = {
-  id: '1',
-  customerName: 'John Doe',
-  customerEmail: 'john.doe@example.com',
-  customerPhone: '+1 (555) 123-4567',
-  date: '2025-04-22',
-  time: '19:00',
-  partySize: 4,
-  tableNumber: 5,
-  specialRequests: 'Window seat preferred. Celebrating an anniversary.',
-  status: 'confirmed',
-  createdAt: '2025-04-15T10:30:00Z'
+type ReservationDetailParams = {
+  reservationId: string;
 };
 
-const ReservationDetailScreen = ({ route, navigation }) => {
-  const { reservationId } = route.params || { reservationId: '1' };
+type StaffStackParamList = {
+  ReservationList: undefined;
+  ReservationDetail: { reservationId: string };
+  CreateReservation: undefined;
+  EditReservation: { reservationId: string };
+};
+
+const ReservationDetailScreen = () => {
+  const [reservation, setReservation] = useState<Reservation | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [updating, setUpdating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [statusMenuVisible, setStatusMenuVisible] = useState(false);
+  const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
+  const [cancellationReason, setCancellationReason] = useState('');
+
+  const route = useRoute<RouteProp<Record<string, ReservationDetailParams>, string>>();
+  const navigation = useNavigation<StackNavigationProp<StaffStackParamList>>();
+  const { user } = useAuth();
   
-  // In a real app, you would fetch the reservation by ID
-  const [reservation, setReservation] = useState(mockReservation);
+  const reservationId = route.params.reservationId;
 
-  const handleUpdateStatus = (newStatus) => {
-    setReservation(prev => ({ ...prev, status: newStatus }));
-    Alert.alert('Status Updated', `Reservation status updated to ${newStatus}`);
-  };
-
-  const handleAssignTable = () => {
-    // This would open a table selection UI
-    Alert.alert('Assign Table', 'This would open a table selection interface');
-  };
-
-  const handleEditReservation = () => {
-    // Navigate to edit screen
-    Alert.alert('Edit Reservation', 'This would navigate to the edit reservation screen');
-  };
-
-  const handleDeleteReservation = () => {
-    Alert.alert(
-      'Delete Reservation',
-      'Are you sure you want to delete this reservation? This action cannot be undone.',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { 
-          text: 'Delete', 
-          onPress: () => {
-            Alert.alert('Deleted', 'Reservation has been deleted');
-            navigation.goBack();
-          },
-          style: 'destructive' 
-        },
-      ]
-    );
-  };
-
-  const getStatusStyle = (status) => {
-    switch (status) {
-      case 'confirmed':
-        return styles.confirmedStatus;
-      case 'pending':
-        return styles.pendingStatus;
-      case 'cancelled':
-        return styles.cancelledStatus;
-      default:
-        return styles.pendingStatus;
+  const fetchReservationDetail = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await api.get(`/reservations/${reservationId}`);
+      setReservation(response.data);
+    } catch (err) {
+      setError('Failed to load reservation details');
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
+  useFocusEffect(
+    useCallback(() => {
+      fetchReservationDetail();
+    }, [reservationId])
+  );
+
+  const updateReservationStatus = async (newStatus: ReservationStatus, reason?: string) => {
+    if (!reservation) return;
+    
+    setUpdating(true);
+    try {
+      const payload = {
+        status: newStatus,
+        cancellationReason: reason
+      };
+      
+      await api.patch(`/reservations/${reservation.id}/status`, payload);
+      
+      // Update the local state
+      setReservation(prev => {
+        if (!prev) return null;
+        return { ...prev, status: newStatus };
+      });
+      
+      Alert.alert('Success', `Reservation status updated to ${newStatus}`);
+    } catch (err) {
+      Alert.alert('Error', 'Failed to update reservation status');
+      console.error(err);
+    } finally {
+      setUpdating(false);
+      setStatusMenuVisible(false);
+      setCancelDialogVisible(false);
+      setCancellationReason('');
+    }
+  };
+
+  const handleStatusChange = (newStatus: ReservationStatus) => {
+    if (newStatus === ReservationStatus.CANCELLED) {
+      setCancelDialogVisible(true);
+    } else {
+      Alert.alert(
+        'Confirm Status Change',
+        `Are you sure you want to change the status to ${newStatus}?`,
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Yes', onPress: () => updateReservationStatus(newStatus) }
+        ]
+      );
+    }
+  };
+
+  const handleCancellation = () => {
+    if (cancellationReason.trim().length === 0) {
+      Alert.alert('Error', 'Please provide a reason for cancellation');
+      return;
+    }
+    
+    updateReservationStatus(ReservationStatus.CANCELLED, cancellationReason);
+  };
+
+  const navigateToEdit = () => {
+    if (reservation) {
+      navigation.navigate('EditReservation', { reservationId: reservation.id });
+    }
+  };
+
+  const getStatusColor = (status: ReservationStatus) => {
+    switch (status) {
+      case ReservationStatus.CONFIRMED:
+        return '#4CAF50';
+      case ReservationStatus.CHECKED_IN:
+        return '#2196F3';
+      case ReservationStatus.CHECKED_OUT:
+        return '#9E9E9E';
+      case ReservationStatus.CANCELLED:
+        return '#F44336';
+      case ReservationStatus.PENDING:
+      default:
+        return '#FF9800';
+    }
+  };
+
+  const canChangeStatus = (currentStatus: ReservationStatus): boolean => {
+    // Admin can change to any status
+    if (user?.role === UserRole.ADMIN) return true;
+    
+    // Staff can change between PENDING, CONFIRMED, CHECKED_IN, CHECKED_OUT but not to CANCELLED
+    if (user?.role === UserRole.STAFF) {
+      // Staff can't change already cancelled reservations
+      if (currentStatus === ReservationStatus.CANCELLED) return false;
+      return true;
+    }
+    
+    return false; // Customer and other roles can't change status
+  };
+
+  const getAvailableStatusOptions = (): ReservationStatus[] => {
+    if (!reservation) return [];
+    
+    // Admin can change to any status
+    if (user?.role === UserRole.ADMIN) {
+      return Object.values(ReservationStatus);
+    }
+    
+    // Staff options depend on current status
+    if (user?.role === UserRole.STAFF) {
+      switch (reservation.status) {
+        case ReservationStatus.PENDING:
+          return [ReservationStatus.CONFIRMED, ReservationStatus.CANCELLED];
+        case ReservationStatus.CONFIRMED:
+          return [ReservationStatus.CHECKED_IN, ReservationStatus.CANCELLED];
+        case ReservationStatus.CHECKED_IN:
+          return [ReservationStatus.CHECKED_OUT];
+        case ReservationStatus.CHECKED_OUT:
+          return []; // Can't change after check-out
+        case ReservationStatus.CANCELLED:
+          return []; // Can't change after cancellation
+        default:
+          return [];
+      }
+    }
+    
+    return []; // No options for other roles
+  };
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  if (error || !reservation) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text variant="bodyLarge">{error || 'Reservation not found'}</Text>
+        <Button mode="contained" onPress={fetchReservationDetail} style={styles.actionButton}>
+          Retry
+        </Button>
+      </View>
+    );
+  }
+
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.headerContent}>
-          <Text style={styles.customerName}>{reservation.customerName}</Text>
-          <View style={[styles.statusBadge, getStatusStyle(reservation.status)]}>
-            <Text style={styles.statusText}>{reservation.status}</Text>
+      <Card style={styles.card}>
+        <Card.Content>
+          <View style={styles.headerRow}>
+            <View>
+              <Text variant="titleLarge">Reservation #{reservation.confirmationCode}</Text>
+              <Text variant="bodyMedium">Created on {format(new Date(reservation.createdAt), 'MMM dd, yyyy')}</Text>
+            </View>
+            <Chip
+              mode="flat"
+              textStyle={{ color: '#fff' }}
+              style={{ backgroundColor: getStatusColor(reservation.status) }}
+            >
+              {reservation.status}
+            </Chip>
           </View>
-        </View>
-      </View>
-      
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Reservation Details</Text>
-        
-        <View style={styles.detailRow}>
-          <View style={styles.detailItem}>
-            <Icon name="calendar" size={18} color="#2196F3" style={styles.detailIcon} />
-            <Text style={styles.detailLabel}>Date</Text>
-            <Text style={styles.detailValue}>{reservation.date}</Text>
-          </View>
+
+          <Divider style={styles.divider} />
           
-          <View style={styles.detailItem}>
-            <Icon name="clock-outline" size={18} color="#2196F3" style={styles.detailIcon} />
-            <Text style={styles.detailLabel}>Time</Text>
-            <Text style={styles.detailValue}>{reservation.time}</Text>
+          <View style={styles.section}>
+            <Text variant="titleMedium">Guest Information</Text>
+            <View style={styles.infoRow}>
+              <Text variant="bodyMedium">Name:</Text>
+              <Text variant="bodyMedium">{reservation.guest.name}</Text>
+            </View>
+            <View style={styles.infoRow}>
+              <Text variant="bodyMedium">Email:</Text>
+              <Text variant="bodyMedium">{reservation.guest.email}</Text>
+            </View>
+            {reservation.guest.phone && (
+              <View style={styles.infoRow}>
+                <Text variant="bodyMedium">Phone:</Text>
+                <Text variant="bodyMedium">{reservation.guest.phone}</Text>
+              </View>
+            )}
           </View>
-        </View>
-        
-        <View style={styles.detailRow}>
-          <View style={styles.detailItem}>
-            <Icon name="account-group" size={18} color="#2196F3" style={styles.detailIcon} />
-            <Text style={styles.detailLabel}>Party Size</Text>
-            <Text style={styles.detailValue}>{reservation.partySize} people</Text>
-          </View>
+
+          <Divider style={styles.divider} />
           
-          <View style={styles.detailItem}>
-            <Icon name="table-chair" size={18} color="#2196F3" style={styles.detailIcon} />
-            <Text style={styles.detailLabel}>Table</Text>
-            <Text style={styles.detailValue}>Table {reservation.tableNumber}</Text>
+          <View style={styles.section}>
+            <Text variant="titleMedium">Reservation Details</Text>
+            <View style={styles.infoRow}>
+              <Text variant="bodyMedium">Room:</Text>
+              <Text variant="bodyMedium">{reservation.roomNumber || 'Not assigned'}</Text>
+            </View>
+            <View style={styles.infoRow}>
+              <Text variant="bodyMedium">Check-in:</Text>
+              <Text variant="bodyMedium">{format(new Date(reservation.checkInDate), 'MMM dd, yyyy')}</Text>
+            </View>
+            <View style={styles.infoRow}>
+              <Text variant="bodyMedium">Check-out:</Text>
+              <Text variant="bodyMedium">{format(new Date(reservation.checkOutDate), 'MMM dd, yyyy')}</Text>
+            </View>
+            <View style={styles.infoRow}>
+              <Text variant="bodyMedium">Guests:</Text>
+              <Text variant="bodyMedium">{reservation.adults} Adults, {reservation.children} Children</Text>
+            </View>
           </View>
-        </View>
-      </View>
-      
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Customer Information</Text>
-        
-        <View style={styles.infoItem}>
-          <Icon name="account" size={20} color="#2196F3" style={styles.infoIcon} />
-          <View>
-            <Text style={styles.infoLabel}>Name</Text>
-            <Text style={styles.infoValue}>{reservation.customerName}</Text>
-          </View>
-        </View>
-        
-        <View style={styles.infoItem}>
-          <Icon name="email" size={20} color="#2196F3" style={styles.infoIcon} />
-          <View>
-            <Text style={styles.infoLabel}>Email</Text>
-            <Text style={styles.infoValue}>{reservation.customerEmail}</Text>
-          </View>
-        </View>
-        
-        <View style={styles.infoItem}>
-          <Icon name="phone" size={20} color="#2196F3" style={styles.infoIcon} />
-          <View>
-            <Text style={styles.infoLabel}>Phone</Text>
-            <Text style={styles.infoValue}>{reservation.customerPhone}</Text>
-          </View>
-        </View>
-        
-        {reservation.specialRequests && (
-          <View style={styles.specialRequests}>
-            <Text style={styles.specialRequestsLabel}>Special Requests:</Text>
-            <Text style={styles.specialRequestsText}>{reservation.specialRequests}</Text>
+
+          {reservation.specialRequests && (
+            <>
+              <Divider style={styles.divider} />
+              <View style={styles.section}>
+                <Text variant="titleMedium">Special Requests</Text>
+                <Text variant="bodyMedium">{reservation.specialRequests}</Text>
+              </View>
+            </>
+          )}
+        </Card.Content>
+      </Card>
+
+      <View style={styles.actionsContainer}>
+        {/* Status update button - visible only to staff and admin */}
+        {canChangeStatus(reservation.status) && (
+          <View style={styles.statusUpdateContainer}>
+            <Menu
+              visible={statusMenuVisible}
+              onDismiss={() => setStatusMenuVisible(false)}
+              anchor={
+                <Button 
+                  mode="contained" 
+                  icon="clipboard-edit-outline" 
+                  onPress={() => setStatusMenuVisible(true)}
+                  loading={updating}
+                  style={styles.actionButton}
+                >
+                  Update Status
+                </Button>
+              }
+            >
+              {getAvailableStatusOptions().map((status) => (
+                <Menu.Item
+                  key={status}
+                  title={status}
+                  onPress={() => handleStatusChange(status)}
+                />
+              ))}
+            </Menu>
           </View>
         )}
-      </View>
-      
-      <View style={styles.actionsSection}>
-        <Text style={styles.sectionTitle}>Actions</Text>
-        
-        <View style={styles.actionButtons}>
-          {reservation.status !== 'confirmed' && (
-            <TouchableOpacity 
-              style={[styles.actionButton, styles.confirmButton]}
-              onPress={() => handleUpdateStatus('confirmed')}
-            >
-              <Icon name="check" size={20} color="white" />
-              <Text style={styles.actionButtonText}>Confirm</Text>
-            </TouchableOpacity>
-          )}
-          
-          {reservation.status !== 'cancelled' && (
-            <TouchableOpacity 
-              style={[styles.actionButton, styles.cancelButton]}
-              onPress={() => handleUpdateStatus('cancelled')}
-            >
-              <Icon name="close" size={20} color="white" />
-              <Text style={styles.actionButtonText}>Cancel</Text>
-            </TouchableOpacity>
-          )}
-          
-          <TouchableOpacity 
+
+        {/* Edit reservation button - visible only to admin and staff */}
+        {(user?.role === UserRole.ADMIN || user?.role === UserRole.STAFF) && (
+          <Button 
+            mode="outlined" 
+            icon="pencil" 
+            onPress={navigateToEdit}
             style={styles.actionButton}
-            onPress={handleAssignTable}
           >
-            <Icon name="table-chair" size={20} color="white" />
-            <Text style={styles.actionButtonText}>Assign Table</Text>
-          </TouchableOpacity>
-        </View>
+            Edit Reservation
+          </Button>
+        )}
         
-        <View style={styles.actionButtons}>
-          <TouchableOpacity 
-            style={[styles.actionButton, styles.editButton]}
-            onPress={handleEditReservation}
-          >
-            <Icon name="pencil" size={20} color="white" />
-            <Text style={styles.actionButtonText}>Edit</Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity 
-            style={[styles.actionButton, styles.deleteButton]}
-            onPress={handleDeleteReservation}
-          >
-            <Icon name="delete" size={20} color="white" />
-            <Text style={styles.actionButtonText}>Delete</Text>
-          </TouchableOpacity>
-        </View>
+        {/* Back button */}
+        <Button 
+          mode="text" 
+          icon="arrow-left" 
+          onPress={() => navigation.goBack()}
+          style={styles.actionButton}
+        >
+          Back to List
+        </Button>
       </View>
+
+      {/* Cancellation Dialog */}
+      <Portal>
+        <Dialog visible={cancelDialogVisible} onDismiss={() => setCancelDialogVisible(false)}>
+          <Dialog.Title>Reason for Cancellation</Dialog.Title>
+          <Dialog.Content>
+            <TextInput
+              label="Reason"
+              value={cancellationReason}
+              onChangeText={setCancellationReason}
+              multiline
+              numberOfLines={3}
+            />
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={() => setCancelDialogVisible(false)}>Cancel</Button>
+            <Button onPress={handleCancellation} loading={updating}>Confirm</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
     </ScrollView>
   );
 };
@@ -207,166 +358,47 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f5f5f5',
   },
-  header: {
-    backgroundColor: '#2196F3',
-    paddingVertical: 20,
-    paddingHorizontal: 15,
-  },
-  headerContent: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
   },
-  customerName: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: 'white',
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
   },
-  statusBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 15,
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+  card: {
+    margin: 16,
+    elevation: 2,
   },
-  confirmedStatus: {
-    backgroundColor: '#4CAF50',
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 8,
   },
-  pendingStatus: {
-    backgroundColor: '#FFC107',
-  },
-  cancelledStatus: {
-    backgroundColor: '#F44336',
-  },
-  statusText: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 12,
-    textTransform: 'uppercase',
+  divider: {
+    marginVertical: 16,
   },
   section: {
-    backgroundColor: 'white',
-    borderRadius: 8,
-    margin: 15,
-    marginBottom: 10,
-    padding: 15,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
+    marginBottom: 8,
   },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 15,
-    color: '#333',
-  },
-  detailRow: {
+  infoRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 10,
+    marginTop: 8,
   },
-  detailItem: {
-    flex: 1,
-    alignItems: 'center',
-    padding: 10,
-    borderWidth: 1,
-    borderColor: '#eee',
-    borderRadius: 8,
-    marginHorizontal: 5,
+  actionsContainer: {
+    padding: 16,
+    gap: 12,
   },
-  detailIcon: {
-    marginBottom: 5,
-  },
-  detailLabel: {
-    fontSize: 12,
-    color: '#666',
-    marginBottom: 3,
-  },
-  detailValue: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#333',
-  },
-  infoItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-  },
-  infoIcon: {
-    marginRight: 15,
-  },
-  infoLabel: {
-    fontSize: 12,
-    color: '#666',
-  },
-  infoValue: {
-    fontSize: 16,
-    color: '#333',
-  },
-  specialRequests: {
-    marginTop: 15,
-    padding: 10,
-    backgroundColor: '#f9f9f9',
-    borderRadius: 5,
-  },
-  specialRequestsLabel: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#666',
-    marginBottom: 5,
-  },
-  specialRequestsText: {
-    fontSize: 14,
-    color: '#333',
-    lineHeight: 20,
-  },
-  actionsSection: {
-    backgroundColor: 'white',
-    borderRadius: 8,
-    margin: 15,
-    padding: 15,
-    marginBottom: 30,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  actionButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 10,
+  statusUpdateContainer: {
+    marginBottom: 8,
   },
   actionButton: {
-    flex: 1,
-    backgroundColor: '#2196F3',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 5,
-    marginHorizontal: 5,
-  },
-  confirmButton: {
-    backgroundColor: '#4CAF50',
-  },
-  cancelButton: {
-    backgroundColor: '#FF9800',
-  },
-  editButton: {
-    backgroundColor: '#2196F3',
-  },
-  deleteButton: {
-    backgroundColor: '#F44336',
-  },
-  actionButtonText: {
-    color: 'white',
-    fontWeight: '500',
-    marginLeft: 5,
+    marginBottom: 8,
   },
 });
 
