@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIP Reservation System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .role-selector.active {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+        }
+        
+        .reservation-card {
+            transition: all 0.2s ease;
+        }
+        
+        .reservation-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="mb-8 text-center">
+            <h1 class="text-4xl font-bold text-indigo-800 mb-2">VIP Reservation System</h1>
+            <p class="text-gray-600">Manage guest reservations and preferences</p>
+        </header>
+        
+        <!-- Role Selection -->
+        <div class="max-w-md mx-auto mb-12 bg-white rounded-xl shadow-md overflow-hidden p-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Select Your Role</h2>
+            <div class="flex justify-between gap-4">
+                <button id="waiterBtn" class="role-selector active flex-1 py-3 px-4 rounded-lg border border-blue-200 bg-blue-50 text-blue-700 font-medium flex flex-col items-center">
+                    <i class="fas fa-utensils text-2xl mb-2"></i>
+                    <span>Waiter</span>
+                </button>
+                <button id="bodyguardBtn" class="role-selector flex-1 py-3 px-4 rounded-lg border border-gray-200 bg-gray-50 text-gray-700 font-medium flex flex-col items-center">
+                    <i class="fas fa-shield-alt text-2xl mb-2"></i>
+                    <span>Bodyguard</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Waiter Interface -->
+        <div id="waiterInterface" class="fade-in">
+            <!-- Search and Filter -->
+            <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+                <div class="flex flex-col md:flex-row gap-4">
+                    <div class="flex-1">
+                        <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Search Reservations</label>
+                        <div class="relative">
+                            <input type="text" id="search" placeholder="Search by name, table, or phone..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="timeFilter" class="block text-sm font-medium text-gray-700 mb-1">Time Range</label>
+                        <select id="timeFilter" class="w-full md:w-40 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="all">All Reservations</option>
+                            <option value="today">Today</option>
+                            <option value="upcoming">Upcoming (Next 2 hours)</option>
+                            <option value="past">Past Reservations</option>
+                        </select>
+                    </div>
+                    <div class="flex items-end">
+                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
+                            <i class="fas fa-plus mr-2"></i>
+                            Add Reservation
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Reservations List -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <div class="p-6 border-b border-gray-200">
+                    <h2 class="text-xl font-semibold text-gray-800">Today's Reservations</h2>
+                </div>
+                <div class="overflow-y-auto max-h-[500px] custom-scrollbar">
+                    <!-- Reservation Cards -->
+                    <div class="divide-y divide-gray-200">
+                        <!-- Sample Reservation 1 -->
+                        <div class="reservation-card p-6 hover:bg-gray-50 cursor-pointer">
+                            <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                                <div class="mb-4 md:mb-0">
+                                    <h3 class="text-lg font-medium text-gray-900">John Smith</h3>
+                                    <div class="flex items-center mt-1 text-sm text-gray-500">
+                                        <i class="fas fa-phone-alt mr-2"></i>
+                                        <span>+1 (555) 123-4567</span>
+                                    </div>
+                                    <div class="flex items-center mt-1 text-sm text-gray-500">
+                                        <i class="fas fa-envelope mr-2"></i>
+                                        <span>john.smith@example.com</span>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col md:items-end">
+                                    <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 mb-2">
+                                        <i class="fas fa-circle mr-2 text-xs"></i>
+                                        Confirmed
+                                    </div>
+                                    <div class="text-gray-900 font-medium">
+                                        <i class="fas fa-clock mr-2 text-blue-500"></i>
+                                        <span>7:30 PM</span>
+                                    </div>
+                                    <div class="text-gray-600 text-sm">
+                                        <i class="fas fa-chair mr-2"></i>
+                                        <span>Table 12 (VIP Booth)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Guest Preferences -->
+                            <div class="mt-4 pt-4 border-t border-gray-200">
+                                <h4 class="text-sm font-medium text-gray-700 mb-2">Guest Preferences</h4>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                        <i class="fas fa-allergies mr-1"></i>
+                                        Peanut Allergy
+                                    </span>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                        <i class="fas fa-wine-glass-alt mr-1"></i>
+                                        Prefers Red Wine
+                                    </span>
+                                    <button class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 hover:bg-gray-200">
+                                        <i class="fas fa-plus mr-1"></i>
+                                        Add Preference
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Notes Section -->
+                            <div class="mt-4">
+                                <label for="notes-1" class="block text-sm font-medium text-gray-700 mb-1">Additional Notes</label>
+                                <textarea id="notes-1" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Add any special notes here...">Celebrating anniversary. Bring complimentary champagne.</textarea>
+                            </div>
+                            
+                            <!-- Action Buttons -->
+                            <div class="mt-4 flex justify-end gap-2">
+                                <button class="px-3 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg">
+                                    <i class="fas fa-edit mr-1"></i>
+                                    Edit
+                                </button>
+                                <button class="px-3 py-1.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg">
+                                    <i class="fas fa-save mr-1"></i>
+                                    Save Changes
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Sample Reservation 2 -->
+                        <div class="reservation-card p-6 hover:bg-gray-50 cursor-pointer">
+                            <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                                <div class="mb-4 md:mb-0">
+                                    <h3 class="text-lg font-medium text-gray-900">Sarah Johnson</h3>
+                                    <div class="flex items-center mt-1 text-sm text-gray-500">
+                                        <i class="fas fa-phone-alt mr-2"></i>
+                                        <span>+1 (555) 987-6543</span>
+                                    </div>
+                                    <div class="flex items-center mt-1 text-sm text-gray-500">
+                                        <i class="fas fa-envelope mr-2"></i>
+                                        <span>sarah.j@example.com</span>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col md:items-end">
+                                    <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800 mb-2">
+                                        <i class="fas fa-exclamation-circle mr-2 text-xs"></i>
+                                        Pending Confirmation
+                                    </div>
+                                    <div class="text-gray-900 font-medium">
+                                        <i class="fas fa-clock mr-2 text-blue-500"></i>
+                                        <span>8:15 PM</span>
+                                    </div>
+                                    <div class="text-gray-600 text-sm">
+                                        <i class="fas fa-chair mr-2"></i>
+                                        <span>Table 5 (Window View)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Guest Preferences -->
+                            <div class="mt-4 pt-4 border-t border-gray-200">
+                                <h4 class="text-sm font-medium text-gray-700 mb-2">Guest Preferences</h4>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        <i class="fas fa-leaf mr-1"></i>
+                                        Vegetarian
+                                    </span>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                        <i class="fas fa-glass-whiskey mr-1"></i>
+                                        No Alcohol
+                                    </span>
+                                    <button class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 hover:bg-gray-200">
+                                        <i class="fas fa-plus mr-1"></i>
+                                        Add Preference
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Notes Section -->
+                            <div class="mt-4">
+                                <label for="notes-2" class="block text-sm font-medium text-gray-700 mb-1">Additional Notes</label>
+                                <textarea id="notes-2" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Add any special notes here..."></textarea>
+                            </div>
+                            
+                            <!-- Action Buttons -->
+                            <div class="mt-4 flex justify-end gap-2">
+                                <button class="px-3 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg">
+                                    <i class="fas fa-edit mr-1"></i>
+                                    Edit
+                                </button>
+                                <button class="px-3 py-1.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg">
+                                    <i class="fas fa-save mr-1"></i>
+                                    Save Changes
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bodyguard Interface (Hidden by default) -->
+        <div id="bodyguardInterface" class="hidden fade-in">
+            <!-- Current Arrivals -->
+            <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Current Arrivals (Next 30 minutes)</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Arrival Card 1 -->
+                    <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
+                                <i class="fas fa-user text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-lg font-medium text-gray-900">Michael Brown</h3>
+                                <p class="text-sm text-gray-500 mt-1">
+                                    <i class="fas fa-clock mr-1"></i>
+                                    Arriving in 15 minutes (8:00 PM)
+                                </p>
+                                <div class="mt-2">
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                                        <i class="fas fa-chair mr-1"></i>
+                                        Table 8
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-gray-200">
+                            <div class="text-sm">
+                                <p class="text-gray-600">
+                                    <i class="fas fa-id-card mr-2"></i>
+                                    <span class="font-medium">VIP Status:</span> Gold Member
+                                </p>
+                                <p class="text-gray-600 mt-1">
+                                    <i class="fas fa-car mr-2"></i>
+                                    <span class="font-medium">Vehicle:</span> Black Mercedes (XYZ 1234)
+                                </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Arrival Card 2 -->
+                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 h-12 w-12 rounded-full bg-red-100 flex items-center justify-center text-red-600">
+                            <i class="fas fa-user-tie text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-lg font-medium text-gray-900">Emma Wilson</h3>
+                            <p class="text-sm text-gray-500 mt-1">
+                                <i class="fas fa-clock mr-1"></i>
+                                Arriving in 25 minutes (8:10 PM)
+                            </p>
+                            <div class="mt-2">
+                                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                                    <i class="fas fa-chair mr-1"></i>
+                                    VIP Lounge 3
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-200">
+                        <div class="text-sm">
+                            <p class="text-gray-600">
+                                <i class="fas fa-id-card mr-2"></i>
+                                <span class="font-medium">VIP Status:</span> Platinum Member
+                            </p>
+                            <p class="text-gray-600 mt-1">
+                                <i class="fas fa-car mr-2"></i>
+                                <span class="font-medium">Vehicle:</span> White Range Rover (ABC 5678)
+                            </p>
+                            <p class="text-gray-600 mt-1">
+                                <i class="fas fa-user-shield mr-2"></i>
+                                <span class="font-medium">Security Detail:</span> 2 bodyguards
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Arrival Card 3 -->
+                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 h-12 w-12 rounded-full bg-green-100 flex items-center justify-center text-green-600">
+                            <i class="fas fa-user text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-lg font-medium text-gray-900">David Lee</h3>
+                            <p class="text-sm text-gray-500 mt-1">
+                                <i class="fas fa-clock mr-1"></i>
+                                Arriving now
+                            </p>
+                            <div class="mt-2">
+                                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                                    <i class="fas fa-chair mr-1"></i>
+                                    Table 14
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-200">
+                        <div class="text-sm">
+                            <p class="text-gray-600">
+                                <i class="fas fa-id-card mr-2"></i>
+                                <span class="font-medium">VIP Status:</span> Regular
+                            </p>
+                            <p class="text-gray-600 mt-1">
+                                <i class="fas fa-car mr-2"></i>
+                                <span class="font-medium">Vehicle:</span> Silver BMW (LMN 9012)
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Arrivals -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden mt-8">
+            <div class="p-6 border-b border-gray-200">
+                <h2 class="text-xl font-semibold text-gray-800">Recent Arrivals</h2>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Guest</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Arrival Time</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Table</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">VIP Status</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-10 w-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-600">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900">Jessica Parker</div>
+                                        <div class="text-sm text-gray-500">+1 (555) 234-5678</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">7:45 PM</div>
+                                <div class="text-sm text-gray-500">5 min ago</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                    VIP Booth 2
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                Diamond Member
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <button class="text-indigo-600 hover:text-indigo-900 mr-3">Details</button>
+                                <button class="text-green-600 hover:text-green-900">Check In</button>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+                                        <i class="fas fa-user-tie"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900">Robert Chen</div>
+                                        <div class="text-sm text-gray-500">+1 (555) 345-6789</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">7:30 PM</div>
+                                <div class="text-sm text-gray-500">20 min ago</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                    Table 4
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                Gold Member
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <button class="text-indigo-600 hover:text-indigo-900 mr-3">Details</button>
+                                <button class="text-green-600 hover:text-green-900">Check In</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Toggle between waiter and bodyguard interfaces
+    document.addEventListener('DOMContentLoaded', function() {
+        const waiterBtn = document.getElementById('waiterBtn');
+        const bodyguardBtn = document.getElementById('bodyguardBtn');
+        const waiterInterface = document.getElementById('waiterInterface');
+        const bodyguardInterface = document.getElementById('bodyguardInterface');
+        
+        // Set initial active state
+        waiterBtn.classList.add('active');
+        waiterInterface.classList.remove('hidden');
+        bodyguardInterface.classList.add('hidden');
+        
+        // Waiter button click
+        waiterBtn.addEventListener('click', function() {
+            waiterBtn.classList.add('active');
+            waiterBtn.classList.remove('text-gray-700', 'bg-gray-50');
+            waiterBtn.classList.add('text-blue-700', 'bg-blue-50');
+            
+            bodyguardBtn.classList.remove('active');
+            bodyguardBtn.classList.remove('text-blue-700', 'bg-blue-50');
+            bodyguardBtn.classList.add('text-gray-700', 'bg-gray-50');
+            
+            waiterInterface.classList.remove('hidden');
+            bodyguardInterface.classList.add('hidden');
+            
+            // Add fade-in animation
+            waiterInterface.classList.add('fade-in');
+            setTimeout(() => {
+                waiterInterface.classList.remove('fade-in');
+            }, 300);
+        });
+        
+        // Bodyguard button click
+        bodyguardBtn.addEventListener('click', function() {
+            bodyguardBtn.classList.add('active');
+            bodyguardBtn.classList.remove('text-gray-700', 'bg-gray-50');
+            bodyguardBtn.classList.add('text-blue-700', 'bg-blue-50');
+            
+            waiterBtn.classList.remove('active');
+            waiterBtn.classList.remove('text-blue-700', 'bg-blue-50');
+            waiterBtn.classList.add('text-gray-700', 'bg-gray-50');
+            
+            bodyguardInterface.classList.remove('hidden');
+            waiterInterface.classList.add('hidden');
+            
+            // Add fade-in animation
+            bodyguardInterface.classList.add('fade-in');
+            setTimeout(() => {
+                bodyguardInterface.classList.remove('fade-in');
+            }, 300);
+        });
+        
+        // Simulate data loading
+        setTimeout(() => {
+            const loadingElements = document.querySelectorAll('.loading-skeleton');
+            loadingElements.forEach(el => {
+                el.classList.remove('animate-pulse', 'bg-gray-200', 'rounded');
+            });
+        }, 1000);
+    });
+    
+    // Function to handle saving preferences (would be connected to backend in real app)
+    function savePreferences(reservationId) {
+        const notes = document.getElementById(`notes-${reservationId}`).value;
+        // Here you would typically send data to server
+        console.log(`Saving preferences for reservation ${reservationId}:`, notes);
+        
+        // Show success message
+        const toast = document.createElement('div');
+        toast.className = 'fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg flex items-center';
+        toast.innerHTML = `
+            <i class="fas fa-check-circle mr-2"></i>
+            Preferences saved successfully!
+        `;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.remove();
+        }, 3000);
+    }
+</script>
+</body>
+</html>

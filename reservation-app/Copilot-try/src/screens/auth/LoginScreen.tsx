@@ -6,7 +6,7 @@ const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const { signIn } = useAuth();
+  const { login } = useAuth();
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -17,7 +17,7 @@ const LoginScreen = ({ navigation }) => {
     setLoading(true);
     
     try {
-      await signIn(email, password);
+      await login(email, password);
     } catch (error) {
       console.log(error);
       Alert.alert('Error', 'Invalid email or password');
@@ -28,7 +28,7 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Reservation App</Text>
+      <Text style={styles.title}>Bella Cucina</Text>
       <View style={styles.form}>
         <TextInput
           style={styles.input}
@@ -52,12 +52,23 @@ const LoginScreen = ({ navigation }) => {
         >
           <Text style={styles.buttonText}>{loading ? 'Logging in...' : 'Login'}</Text>
         </TouchableOpacity>
-        <TouchableOpacity 
-          onPress={() => navigation.navigate('ForgotPassword')}
-        >
-          <Text style={styles.forgotPassword}>Forgot Password?</Text>
-        </TouchableOpacity>
+        
+        <View style={styles.linkContainer}>
+          <TouchableOpacity 
+            onPress={() => navigation.navigate('ForgotPassword')}
+          >
+            <Text style={styles.link}>Forgot Password?</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            onPress={() => navigation.navigate('AuthTest')}
+          >
+            <Text style={styles.link}>Auth Test Panel</Text>
+          </TouchableOpacity>
+        </View>
       </View>
+      
+      <Text style={styles.version}>Environment: {process.env.NODE_ENV || 'development'}</Text>
     </View>
   );
 };
@@ -106,10 +117,19 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
   },
-  forgotPassword: {
+  linkContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
+  },
+  link: {
     color: '#2196F3',
+  },
+  version: {
+    color: '#666',
     textAlign: 'center',
     marginTop: 20,
+    fontSize: 12,
   },
 });
 

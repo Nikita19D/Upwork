@@ -14,6 +14,16 @@ export interface Guest {
   phone?: string;
 }
 
+export interface Venue {
+  id: string;
+  name: string;
+  coordinates: {
+    latitude: number;
+    longitude: number;
+  };
+  radius?: number;
+}
+
 export interface Reservation {
   id: string;
   guest: Guest;
@@ -25,6 +35,9 @@ export interface Reservation {
   status: ReservationStatus;
   confirmationCode?: string;
   specialRequests?: string;
+  cancellationReason?: string;
+  staffNotes?: string;
   createdAt: string;
   updatedAt: string;
+  venue?: Venue;
 }

@@ -9,9 +9,13 @@ import { UserRole } from '../types/auth';
 // Auth Screens
 import LoginScreen from '../screens/auth/LoginScreen';
 import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen';
+import AuthTest from '../screens/auth/AuthTest';
 
 // Common Screens (available to all authenticated users)
 import DashboardScreen from '../screens/common/DashboardScreen';
+
+// Staff Screens
+import VenueGeofenceScreen from '../screens/staff/VenueGeofenceScreen';
 
 // Create placeholder components for missing screens
 const ProfileScreen = () => <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>Profile Screen</Text></View>;
@@ -42,6 +46,7 @@ type StaffReservationStackParamList = {
   ReservationList: undefined;
   ReservationDetail: { reservationId: string };
   CreateReservation: undefined;
+  VenueGeofence: { venueId: string };
 };
 
 type CustomerReservationStackParamList = {
@@ -79,6 +84,7 @@ const AuthNavigator = () => {
     <Stack.Navigator id={undefined} screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+      <Stack.Screen name="AuthTest" component={AuthTest} options={{ headerShown: true, title: 'Test Authentication' }} />
     </Stack.Navigator>
   );
 };
@@ -191,6 +197,7 @@ const StaffReservationStack = () => {
       <Stack.Screen name="ReservationList" component={ReservationListScreen} options={{ title: 'All Reservations' }} />
       <Stack.Screen name="ReservationDetail" component={ReservationDetailScreen} options={{ title: 'Reservation Details' }} />
       <Stack.Screen name="CreateReservation" component={CreateReservationScreen} options={{ title: 'New Reservation' }} />
+      <Stack.Screen name="VenueGeofence" component={VenueGeofenceScreen} options={{ title: 'Venue Geofencing' }} />
     </Stack.Navigator>
   );
 };

@@ -100,7 +100,13 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "build:preview": "eas build --profile preview",
+    "build:production": "eas build --profile production",
+    "submit:ios": "eas submit -p ios",
+    "submit:android": "eas submit -p android",
+    "publish": "expo publish",
+    "prebuild": "expo prebuild"
   },
   "browser": {
     "fs": false,
@@ -120,7 +126,7 @@
   "gitHead": "68cead182cc24afdc3f1ce7c8ff5853aba14b65a",
   "private": true,
   "dependencies": {
-    "@react-native-async-storage/async-storage": "^1.23.1",
+    "@react-native-async-storage/async-storage": "^1.24.0",
     "@react-native-community/cli-server-api": "^18.0.0",
     "@react-native-community/datetimepicker": "^8.0.1",
     "@react-navigation/bottom-tabs": "^7.3.10",
@@ -130,11 +136,14 @@
     "axios": "^1.8.4",
     "date-fns": "^4.1.0",
     "expo": "~51.0.0",
+    "expo-location": "^18.0.10",
     "expo-notifications": "^0.28.19",
     "expo-secure-store": "^13.0.2",
     "expo-status-bar": "^1.12.1",
+    "firebase": "^9.10.0",
     "react": "^18.2.0",
     "react-native": "^0.74.5",
+    "react-native-dotenv": "^3.4.11",
     "react-native-gesture-handler": "^2.16.1",
     "react-native-paper": "^5.13.3",
     "react-native-reanimated": "^3.10.1",
