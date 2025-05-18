@@ -1,0 +1,23 @@
+{
+    "name": "Alex",
+    "balance": 10397.059997558594,
+    "holdings": {
+        "AAPL": 3
+    },
+    "history": [
+        {
+            "action": "buy",
+            "stock": "AAPL",
+            "price": 198.52999877929688,
+            "shares": 5,
+            "time": "2025-05-11 16:14"
+        },
+        {
+            "action": "sell",
+            "stock": "AAPL",
+            "price": 198.52999877929688,
+            "shares": 2,
+            "time": "2025-05-11 16:14"
+        }
+    ]
+}
