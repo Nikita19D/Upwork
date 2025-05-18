@@ -6,7 +6,9 @@
     "start": "node server/server.js",
     "dev": "nodemon server/server.js",
     "setup-db": "node setup-database.js",
-    "db-diagnostics": "node db-diagnostics.js"
+    "db-diagnostics": "node db-diagnostics.js",
+    "test-db": "node test-db-connection.js",
+    "verify-setup": "npm run test-db"
   },
   "dependencies": {
     "compression": "^1.7.4",
