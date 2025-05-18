@@ -2,10 +2,10 @@
   "name": "bella-cucina",
   "version": "1.0.0",
   "description": "Italian Restaurant Reservation System",
-  "main": "server/server.js",
-  "scripts": {
+  "main": "server/server.js",  "scripts": {
     "start": "node server/server.js",
-    "dev": "nodemon server/server.js"
+    "dev": "nodemon server/server.js",
+    "setup-db": "node setup-database.js"
   },
   "dependencies": {
     "compression": "^1.7.4",

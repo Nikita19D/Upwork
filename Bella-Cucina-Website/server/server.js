@@ -50,7 +50,7 @@ transporter.verify((error, success) => {
 
 // Database configuration for Render
 const pool = new Pool({
-    connectionString: 'postgresql://schema_uez0_user:BVwbEKyvGYwKht8lJj0kncVbpTDA154p@dpg-cvslha6uk2gs73bpfohg-a.frankfurt-postgres.render.com/schema_uez0',
+    connectionString: process.env.DATABASE_URL,
     ssl: {
         rejectUnauthorized: false
     },
