@@ -5,7 +5,8 @@
   "main": "server/server.js",  "scripts": {
     "start": "node server/server.js",
     "dev": "nodemon server/server.js",
-    "setup-db": "node setup-database.js"
+    "setup-db": "node setup-database.js",
+    "db-diagnostics": "node db-diagnostics.js"
   },
   "dependencies": {
     "compression": "^1.7.4",

@@ -49,6 +49,15 @@ transporter.verify((error, success) => {
 });
 
 // Database configuration for Render
+console.log('Configuring database connection...');
+// Log connection info without exposing credentials
+const dbUrlParts = process.env.DATABASE_URL ? new URL(process.env.DATABASE_URL) : {};
+if (dbUrlParts.hostname) {
+    console.log(`Database host: ${dbUrlParts.hostname}`);
+    console.log(`Database name: ${dbUrlParts.pathname ? dbUrlParts.pathname.substring(1) : 'unknown'}`);
+    console.log(`Database user: ${dbUrlParts.username || 'unknown'}`);
+}
+
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: {
@@ -56,7 +65,7 @@ const pool = new Pool({
     },
     max: 20,
     idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 2000,
+    connectionTimeoutMillis: 5000, // Increased timeout
 });
 
 // Database initialization function
